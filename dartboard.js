@@ -13,9 +13,6 @@ function DartBoard( parms ){
 
 	}
 
-
-
-
 	this.draw();
 }
 
@@ -59,7 +56,6 @@ DartBoard.prototype.draw = function( ) {
 
 				console.log (origX + "," + origY);
 
-
 				// Clear the canvas
 				board.canvas.width = board.canvas.width;
 
@@ -71,12 +67,14 @@ DartBoard.prototype.draw = function( ) {
 				// same % as in the unzoomed case, so when we zoom in the mouse (or finger)
 				// is still pointing to the same place on the baord
 				
-				var origOffX = (board.canvas.width/2)
+				var origOffX = ((board.canvas.width/2) - x) * (Math.PI/2);
+				var origOffY = ((board.canvas.height/2) - y) * (Math.PI/2);
 
+				console.log( 'origOffX: ' + origOffX + ' origOffY: ' + origOffY );
 
 				// redraw, zoomed in
 				context.drawImage(	board.boardImage,
-							origX-(zoomCropSize/2), origY-(zoomCropSize/2), // src coordinates
+							origX-(zoomCropSize/2) + origOffX, origY-(zoomCropSize/2) + origOffY, // src coordinates
 							zoomCropSize, zoomCropSize,
 							0, 0, // dst coordinates
 							board.size, board.size );
@@ -104,6 +102,12 @@ DartBoard.prototype.draw = function( ) {
 
 					console.log( 'R:' + r + 'g: ' + g + 'b: ' + b, 'a: ' + a );
 	
+					image.data[0] = 255-image.data[0];
+					image.data[1] = 255-image.dat[1];
+					image.data[2] = 255-image.data[2];
+					
+					context.putImageData( image.data, x, y );
+
 					//console.log( x + ',' + y ); 
 				}
 
