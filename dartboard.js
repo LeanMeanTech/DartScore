@@ -5,8 +5,6 @@ function DartBoard( parms ){
 	this.selectionCallback = parms.selectionCallback;
 	this.zoomFactor = 2;
 	this.draw();
-	
-	
 }
 
 
@@ -37,6 +35,9 @@ DartBoard.prototype.draw = function( ) {
 				var x = e.pageX - this.offsetLeft;
 				var y = e.pageY - this.offsetTop;
 
+				console.log( "down: " + x + "," + y );
+
+
 				// x, y are the coords that were 'clicked' on the resized image.
 				// now we map them to the original image
 				var ratio = board.boardImage.width/board.canvas.width;
@@ -53,7 +54,13 @@ DartBoard.prototype.draw = function( ) {
 				var zoomCropSize = origX / board.zoomFactor;
 
 				console.log( "zoomCropSize: " + zoomCropSize );
-			
+
+				// the zoomed x and y should be offset from the center the exact
+				// same % as in the unzoomed case, so when we zoom in the mouse (or finger)
+				// is still pointing to the same place on the baord
+				
+				var origOffX = (board.canvas.width/2)
+
 
 				// redraw, zoomed in
 				context.drawImage(	board.boardImage,
@@ -70,6 +77,12 @@ DartBoard.prototype.draw = function( ) {
 
 
 			$(board.canvas).bind( 'mouseup', function(e) {
+
+				var x = e.pageX - this.offsetLeft;
+				var y = e.pageY - this.offsetTop;
+
+				console.log( "up: " + x + "," + y );
+
 				board.canvas.width = board.canvas.width;
 				context.drawImage( board.boardImage, 0, 0, board.size, board.size );
 			});
