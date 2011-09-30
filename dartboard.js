@@ -4,6 +4,18 @@ function DartBoard( parms ){
 	this.elem = parms.elem;
 	this.selectionCallback = parms.selectionCallback;
 	this.zoomFactor = 2;
+
+	this.boardColors = {
+		black: 0x000000,
+		red: 0xFF0000,
+		light: 0xE1DCB7,
+		green: 0x008C00,
+
+	}
+
+
+
+
 	this.draw();
 }
 
@@ -69,12 +81,32 @@ DartBoard.prototype.draw = function( ) {
 							0, 0, // dst coordinates
 							board.size, board.size );
 				
-
+				board.isMouseDown = true;
 
 			//	context.drawImage( board.boardImage, 0, 0, 200, 200, 0, 0, board.size, board.size );
 
 			} );
 
+
+			$(board.canvas).bind( 'mousemove', function(e) {
+				if( board.isMouseDown ) {
+
+					var x = e.pageX - this.offsetLeft;
+					var y = e.pageY - this.offsetTop;
+
+					var image = context.getImageData( x, y, 1, 1 );
+				
+					var r = image.data[0];
+					var g = image.data[1];
+					var b = image.data[2];
+
+					console.log( 'R:' + r + 'g: ' + g + 'b: ' + b );
+	
+					//console.log( x + ',' + y ); 
+				}
+
+
+			});
 
 			$(board.canvas).bind( 'mouseup', function(e) {
 
@@ -85,6 +117,8 @@ DartBoard.prototype.draw = function( ) {
 
 				board.canvas.width = board.canvas.width;
 				context.drawImage( board.boardImage, 0, 0, board.size, board.size );
+
+				board.isMouseDown = false;
 			});
 		}
 
