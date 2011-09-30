@@ -99,8 +99,10 @@ DartBoard.prototype.draw = function( ) {
 					var r = image.data[0];
 					var g = image.data[1];
 					var b = image.data[2];
+					var a = image.data[3];
 
-					console.log( 'R:' + r + 'g: ' + g + 'b: ' + b );
+
+					console.log( 'R:' + r + 'g: ' + g + 'b: ' + b, 'a: ' + a );
 	
 					//console.log( x + ',' + y ); 
 				}
