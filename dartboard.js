@@ -28,17 +28,15 @@ DartBoard.prototype.draw2 = function() {
 	this.paper = Raphael( offset.left, offset.top, $(this.elem).width(), $(this.elem).height());
 	
 
-	this.outterBoard = this.paper.circle(
-		this.size/2, this.size/2, this.size/2)
-		.attr( 'fill', this.boardColors.black )
-		.click( function() {
-			alert( 'board clicked');
-		});	
-
-
-
-	var radius = (this.size/2) * .75;
+	var radius = (this.size/2) * .72;
 	var center = this.size/2;
+
+	this.outterBoard = this.paper.circle(
+		center, center, this.size/2)
+		.attr( 'fill', this.boardColors.black );
+
+	this.logo = this.paper.image( 'http://www.leanmeantech.com/static/images/logo.png', center-(292/2), center*2 - 100, 296, 68); 
+
 
 	var offX = radius * Math.sin( (2 * Math.PI) / 40 );  
 
@@ -50,7 +48,7 @@ DartBoard.prototype.draw2 = function() {
 	var slicePath = "M " + center + " " + center + " ";
 
 	slicePath += "L " + (center - offX) + " " + (center + offY) + " "; 
-	slicePath += "L " + (center + offX) + " " + (center + offY) + " Z"; 
+	slicePath += "S " + center + " " + ( center + radius * 1/(Math.cos( 2*Math.PI/40 )))  + " " + (center + offX) + " " + (center + offY) + " Z"; 
 
 	this.slicePath = slicePath;
 
@@ -63,11 +61,12 @@ DartBoard.prototype.draw2 = function() {
 		var value = numbers[i];
 		var slice = this.paper.path( this.slicePath );
 		
-		var pointText = this.paper.text( center, center+radius, "\n" + value )
-			.attr( {'font-size': 45, stroke: this.boardColors.white} );
+		var pointText = this.paper.text( center, center+ 1.12*radius, value )
+			.attr( {'font-size': radius/6 , stroke: this.boardColors.white, fill: this.boardColors.white} );
 
 		slice.rotate(  i*18  , center, center );		
 		pointText.rotate( i*18, center, center );
+		pointText.rotate( -i*18, center, center + 1.12*radius );
 
 		if( i % 2 == 0 ) {
 			slice.attr( { fill: this.boardColors.black } );
@@ -77,11 +76,24 @@ DartBoard.prototype.draw2 = function() {
 
 		slice.attr( { stroke: this.boardColors.white, 'stroke-width': 1 } );
 		slice.node.pointval = value;
+		slice.node.thing = slice;
+
+
+		board = this;
 
 		$(slice.node).click( function(e) {
-			alert( this.pointval );
+			board.selectionCallback( this.pointval );
 			console.log('click ', this.pointval );
 		});
+
+		$(slice.node).bind( 'mouseover', function() {
+			board.glow = this.thing.glow( { fill: true, color:'#00f', opacity: 1 });
+
+		}).bind( 'mouseout', function() {
+			board.glow.remove();
+
+		});
+
 
 
 	}

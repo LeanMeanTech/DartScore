@@ -1,7 +1,7 @@
 var Board;
 
 function valueSelected( val ) {
-	alert( val );
+	alert( 'value selected: ' + val );
 }
 
 
