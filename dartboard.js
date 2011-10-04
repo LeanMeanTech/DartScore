@@ -1,21 +1,84 @@
-
-
 function DartBoard( parms ){
 	this.elem = parms.elem;
 	this.selectionCallback = parms.selectionCallback;
 	this.zoomFactor = 2;
 
+	// Calculate the board size 
+	this.size = Math.min( $(this.elem).height(), $(this.elem).width() );
+
+	console.log('size: ' + this.size );
+
 	this.boardColors = {
-		black: 0x000000,
-		red: 0xFF0000,
-		light: 0xE1DCB7,
-		green: 0x008C00,
+		black: '#000',
+		white: '#fff',
+		red: '#f00',
+		light: '#E1DCB7',
+		green: '#008C00',
 
 	}
 
-	this.draw();
+//	this.draw();
+	this.draw2();
 }
 
+
+
+DartBoard.prototype.draw2 = function() {
+	var offset = $(this.elem).offset();
+	this.paper = Raphael( offset.left, offset.top, $(this.elem).width(), $(this.elem).height());
+	
+
+	this.outterBoard = this.paper.circle(
+		this.size/2, this.size/2, this.size/2)
+		.attr( 'fill', this.boardColors.black )
+		.click( function() {
+			alert( 'board clicked');
+		});	
+
+	//var slicePath = "M 0 0 L 15.643 98.769 A 100 100 0 0 1 -15.643 98.769 Z";
+
+	var r = this.size/2;
+
+	var offX = r * Math.sin( (2 * Math.PI) / 40 );  
+
+	var offY = Math.sqrt( Math.pow(r, 2)   - Math.pow(offX,2) );
+	
+	console.log( 'offX: ' + offX + ' offY: ' + offY );
+
+
+	var slicePath = "M " + r + " " + r + " ";
+	slicePath += "L " + (r - offX) + " " + (r + offY) + " "; 
+	slicePath += "L " + (r + offX) + " " + (r + offY) + " Z"; 
+
+	this.slicePath = slicePath;
+
+	var numbers = [ 3, 19, 7, 16, 8, 11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6, 10, 15, 2, 17 ];
+
+
+	for( var i=0; i < numbers.length; i++) {
+		var value = numbers[i];
+		console.log( value );
+		var slice = this.paper.path( this.slicePath );
+		slice.rotate(  i*18  , r, r );		
+
+		if( i % 2 == 0 ) {
+			slice.attr( { fill: this.boardColors.black } );
+		} else {
+			slice.attr( { fill: this.boardColors.light } );
+		}
+
+	}
+		
+
+	this.singleBull = this.paper.circle( r, r, r/15 )
+				.attr( { fill: this.boardColors.green } );
+
+
+	this.doubleBull = this.paper.circle( r, r, r/30 )
+				.attr( { fill: this.boardColors.red } );
+
+
+};
 
 DartBoard.prototype.draw = function( ) {
 	
@@ -103,10 +166,10 @@ DartBoard.prototype.draw = function( ) {
 					console.log( 'R:' + r + 'g: ' + g + 'b: ' + b, 'a: ' + a );
 	
 					image.data[0] = 255-image.data[0];
-					image.data[1] = 255-image.dat[1];
+					image.data[1] = 255-image.data[1];
 					image.data[2] = 255-image.data[2];
 					
-					context.putImageData( image.data, x, y );
+					context.putImageData( image, x, y );
 
 					//console.log( x + ',' + y ); 
 				}
