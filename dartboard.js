@@ -35,31 +35,39 @@ DartBoard.prototype.draw2 = function() {
 			alert( 'board clicked');
 		});	
 
-	//var slicePath = "M 0 0 L 15.643 98.769 A 100 100 0 0 1 -15.643 98.769 Z";
 
-	var r = this.size/2;
 
-	var offX = r * Math.sin( (2 * Math.PI) / 40 );  
+	var radius = (this.size/2) * .75;
+	var center = this.size/2;
 
-	var offY = Math.sqrt( Math.pow(r, 2)   - Math.pow(offX,2) );
+	var offX = radius * Math.sin( (2 * Math.PI) / 40 );  
+
+	var offY = Math.sqrt( Math.pow(radius, 2)   - Math.pow(offX,2) );
 	
 	console.log( 'offX: ' + offX + ' offY: ' + offY );
 
 
-	var slicePath = "M " + r + " " + r + " ";
-	slicePath += "L " + (r - offX) + " " + (r + offY) + " "; 
-	slicePath += "L " + (r + offX) + " " + (r + offY) + " Z"; 
+	var slicePath = "M " + center + " " + center + " ";
+
+	slicePath += "L " + (center - offX) + " " + (center + offY) + " "; 
+	slicePath += "L " + (center + offX) + " " + (center + offY) + " Z"; 
 
 	this.slicePath = slicePath;
+
+	console.log(this.slicePath);
 
 	var numbers = [ 3, 19, 7, 16, 8, 11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6, 10, 15, 2, 17 ];
 
 
 	for( var i=0; i < numbers.length; i++) {
 		var value = numbers[i];
-		console.log( value );
 		var slice = this.paper.path( this.slicePath );
-		slice.rotate(  i*18  , r, r );		
+		
+		var pointText = this.paper.text( center, center+radius, "\n" + value )
+			.attr( {'font-size': 45, stroke: this.boardColors.white} );
+
+		slice.rotate(  i*18  , center, center );		
+		pointText.rotate( i*18, center, center );
 
 		if( i % 2 == 0 ) {
 			slice.attr( { fill: this.boardColors.black } );
@@ -67,14 +75,23 @@ DartBoard.prototype.draw2 = function() {
 			slice.attr( { fill: this.boardColors.light } );
 		}
 
+		slice.attr( { stroke: this.boardColors.white, 'stroke-width': 1 } );
+		slice.node.pointval = value;
+
+		$(slice.node).click( function(e) {
+			alert( this.pointval );
+			console.log('click ', this.pointval );
+		});
+
+
 	}
 		
 
-	this.singleBull = this.paper.circle( r, r, r/15 )
+	this.singleBull = this.paper.circle( center, center, radius/15 )
 				.attr( { fill: this.boardColors.green } );
 
 
-	this.doubleBull = this.paper.circle( r, r, r/30 )
+	this.doubleBull = this.paper.circle( center, center, radius/30 )
 				.attr( { fill: this.boardColors.red } );
 
 
