@@ -25,6 +25,22 @@ $('#gameselect').live( 'pagecreate', function() {
 });
 
 
+
+$('#playerselect').live( 'pagecreate', function() {
+
+	var players = ['Jeff', 'Artur'];
+
+
+	for( var i = 0; i < players.length; i++ ) {
+		var player = players[i];
+		console.log('Adding ' + player);
+		var chkName = 'c_' + player;
+		$('#playerselect legend').after( '<input type="checkbox" name="' +chkName + '" class="custom" /><label for="' + chkName + '">' + player + '</label>');
+	}
+
+});
+
+
 $('#scoreselect').live( 'pagecreate', function() {
 
 	// Calculate ideal board size based on dimensions of the whole page
