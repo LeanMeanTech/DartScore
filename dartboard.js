@@ -14,7 +14,7 @@ function DartBoard( parms ){
 		red: '#f00',
 		light: '#E1DCB7',
 		green: '#008C00',
-		highlight : '#0000dd'
+		highlight : '#ff0'
 	}
 
 //	this.draw();
@@ -22,38 +22,46 @@ function DartBoard( parms ){
 }
 
 
+// Return offsets along the slice
+DartBoard.prototype.getSliceXYOffsets = function( radius ) {
+	var offX = radius * Math.sin( (2 * Math.PI) / 40 );
+	var offY = Math.sqrt( Math.pow(radius, 2) - Math.pow(offX, 2) );
+
+	return { offX: offX, offY: offY };
+}
+
 
 DartBoard.prototype.draw2 = function() {
 	var offset = $(this.elem).offset();
 	this.paper = Raphael( offset.left, offset.top, $(this.elem).width(), $(this.elem).height());
-	
 
 	var radius = (this.size/2) * .72;
-	var center = this.size/2;
+	this.center = this.size/2;
 
 	this.outterBoard = this.paper.circle(
-		center, center, this.size/2)
+		this.center, this.center, this.size/2)
 		.attr( 'fill', this.boardColors.black );
 
-	this.logo = this.paper.image( 'http://www.leanmeantech.com/static/images/logo.png', center-(292/2), center*2 - 100, 296, 68); 
+	//this.logo = this.paper.image( 'http://www.leanmeantech.com/static/images/logo.png', center-(292/2), center*2 - 100, 296, 68); 
+
+	var scoreRingOffs = this.getSliceXYOffsets( radius );
+
+	console.log( 'offX: ' + scoreRingOffs.offX + ' offY: ' + scoreRingOffs.offY );
 
 
-	var offX = radius * Math.sin( (2 * Math.PI) / 40 );  
+	var slicePath = "M " + this.center + " " + this.center + " ";
 
-	var offY = Math.sqrt( Math.pow(radius, 2)   - Math.pow(offX,2) );
-	
-	console.log( 'offX: ' + offX + ' offY: ' + offY );
+	slicePath += "L " + (this.center - scoreRingOffs.offX) + " " + (this.center + scoreRingOffs.offY) + " "; 
+	slicePath += "S " + this.center + " " + ( this.center + radius * 1/(Math.cos( 2*Math.PI/40 )))  + " " + (this.center + scoreRingOffs.offX) + " " + (this.center + scoreRingOffs.offY) + " Z"; 
 
+	//var doubleSlicePath += "M " + (this.center - offX) + " " + (center + offY) + " "; 
 
-	var slicePath = "M " + center + " " + center + " ";
-
-	slicePath += "L " + (center - offX) + " " + (center + offY) + " "; 
-	slicePath += "S " + center + " " + ( center + radius * 1/(Math.cos( 2*Math.PI/40 )))  + " " + (center + offX) + " " + (center + offY) + " Z"; 
 
 	this.slicePath = slicePath;
 
 	console.log(this.slicePath);
 
+	// Clockwise from bottom
 	var numbers = [ 3, 19, 7, 16, 8, 11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6, 10, 15, 2, 17 ];
 
 
@@ -61,12 +69,12 @@ DartBoard.prototype.draw2 = function() {
 		var value = numbers[i];
 		var slice = this.paper.path( this.slicePath );
 		
-		var pointText = this.paper.text( center, center+ 1.12*radius, value )
+		var pointText = this.paper.text( this.center, this.center+ 1.12*radius, value )
 			.attr( {'font-size': radius/6 , stroke: this.boardColors.white, fill: this.boardColors.white} );
 
-		slice.rotate(  i*18  , center, center );		
-		pointText.rotate( i*18, center, center );
-		pointText.rotate( -i*18, center, center + 1.12*radius );
+		slice.rotate(  i*18  , this.center, this.center );		
+		pointText.rotate( i*18, this.center, this.center );
+		pointText.rotate( -i*18, this.center, this.center + 1.12*radius );
 
 
 		if( i % 2 == 0 ) {
@@ -89,23 +97,22 @@ DartBoard.prototype.draw2 = function() {
 		});
 
 		$(slice.node).bind( 'mouseover', function() {
+			console.log( this.pointval );
 			this.thing.attr({ fill : board.boardColors.highlight });
-
 		}).bind( 'mouseout', function() {
 			this.thing.attr( { fill: this.color } );
-
 		});
 
-
+		
 
 	}
 		
 
-	this.singleBull = this.paper.circle( center, center, radius/15 )
+	this.singleBull = this.paper.circle( this.center, this.center, radius/8 )
 				.attr( { fill: this.boardColors.green } );
 
 
-	this.doubleBull = this.paper.circle( center, center, radius/30 )
+	this.doubleBull = this.paper.circle( this.center, this.center, radius/16 )
 				.attr( { fill: this.boardColors.red } );
 
 
