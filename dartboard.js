@@ -14,7 +14,7 @@ function DartBoard( parms ){
 		red: '#f00',
 		light: '#E1DCB7',
 		green: '#008C00',
-
+		highlight : '#0000dd'
 	}
 
 //	this.draw();
@@ -68,16 +68,18 @@ DartBoard.prototype.draw2 = function() {
 		pointText.rotate( i*18, center, center );
 		pointText.rotate( -i*18, center, center + 1.12*radius );
 
+
 		if( i % 2 == 0 ) {
-			slice.attr( { fill: this.boardColors.black } );
+			slice.node.color = this.boardColors.black;
 		} else {
-			slice.attr( { fill: this.boardColors.light } );
+			slice.node.color = this.boardColors.light;
 		}
 
-		slice.attr( { stroke: this.boardColors.white, 'stroke-width': 1 } );
+		slice.attr( { stroke: this.boardColors.white, fill: slice.node.color, 'stroke-width': 1 } );
 		slice.node.pointval = value;
+		
+		// Save a reference to the raphael object
 		slice.node.thing = slice;
-
 
 		board = this;
 
@@ -87,10 +89,10 @@ DartBoard.prototype.draw2 = function() {
 		});
 
 		$(slice.node).bind( 'mouseover', function() {
-			board.glow = this.thing.glow( { fill: true, color:'#00f', opacity: 1 });
+			this.thing.attr({ fill : board.boardColors.highlight });
 
 		}).bind( 'mouseout', function() {
-			board.glow.remove();
+			this.thing.attr( { fill: this.color } );
 
 		});
 
