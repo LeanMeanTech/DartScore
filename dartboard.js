@@ -66,10 +66,10 @@ DartBoard.prototype.draw2 = function() {
 	//this.logo = this.paper.image( 'http://www.leanmeantech.com/static/images/logo.png', center-(292/2), center*2 - 100, 296, 68); 
 
 	this.slicePath = this.getSlicePath( 0, radius );
-	this.doubleSlicePath = this.getSlicePath( radius*0.90, radius );
-	this.tripleSlicePath = this.getSlicePath (radius *0.60, radius *0.65);
+	this.doubleSlicePath = this.getSlicePath( radius*0.925, radius );
+	this.tripleSlicePath = this.getSlicePath (radius *0.57, radius *0.65);
 
-	console.log(this.slicePath);
+	//console.log(this.slicePath);
 
 	// Clockwise from bottom
 	var numbers = [ 3, 19, 7, 16, 8, 11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6, 10, 15, 2, 17 ];
@@ -141,7 +141,7 @@ DartBoard.prototype.draw2 = function() {
 			}
 		}
 	}).bind( 'mouseover', function() {
-		console.log( this );
+		//console.log( this );
 		if( typeof(this.thing) !== 'undefined' ) {
 			this.thing.attr({ fill : board.boardColors.highlight });
 			if( typeof(board.hoverCallback) === 'function' ) {

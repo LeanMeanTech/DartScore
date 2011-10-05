@@ -13,19 +13,41 @@
 
 		<script src="raphael-min.js"></script>
 		<script src="dartboard.js"></script>
+		<script src="gametype.js"></script>
 		<script src="darts.js"></script>
 	</head>
 
 	<body>
 
-		<!-- splash -->
+		<!-- mainmenu -->
 		<div data-role="page" id="mainmenu">
 			<div data-role="header">DartScore</div>
 			<div data-role="content">
-			<p><a href="#scoreselect" data-role="button">Score Select</a></p>
+				<p><a href="#gameselect" data-role="button">Play</a></p>
+				<p><a href="#scoreselect" data-role="button">Stats</a></p>
+				<p><a href="#about" data-rel="dialog" data-role="button">About</a></p>
+
 			</div>
 
 		</div>
+
+
+		<!-- game select -->
+		<div data-role="page" id="gameselect">
+			<div data-role="header">Select Game</div>
+			<div id="gamelist" data-role="content">
+			</div>
+
+		</div>
+
+		<!-- player select -->
+		<div data-role="page" id="playerselect">
+			<div data-role="header">Select Players</div>
+			<div id="gamelist" data-role="content">
+			</div>
+
+		</div>
+
 
 		<!-- scoreselect -->
 		<div data-role="page" id="scoreselect" data-add-back-btn="true">
@@ -35,5 +57,14 @@
 				<div style="font-size: 50px" id="score"></div>
 			</div>
 		</div>
+
+
+		<div data-role="page" id="about">
+			<div data-role="content">
+				COPYRIGHT 2011 LeanMeanTech Incorporated
+
+			</div>
+		</div>
+
 	</body>
 </html>

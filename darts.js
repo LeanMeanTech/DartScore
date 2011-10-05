@@ -5,13 +5,27 @@ function valueSelected( val ) {
 }
 
 
+$('#mainmenu').live( 'pagecreate', function() {
+
+
+});
+
+$('#gameselect').live( 'pagecreate', function() {
+	var games = getGames();
+
+	for( var i=0; i < games.length; i++ ) {
+		console.log( games[i].name );
+
+
+		$('#gamelist').append( '<p><a href="#playerselect" data-role="button">' + games[i].name + '</a></p>' );
+	}
+
+
+//	$('#mainmenu div').append('<p><a href="#scoreselect" data-role="button">Score Select</a></p>');
+});
+
+
 $('#scoreselect').live( 'pagecreate', function() {
-/*	$.getScript('darts.js', function( data, statusText ) {
-		alert('123');
-		Board = new DartBoard( "#board", 600, 600 ); 
-		Board.draw();
-	});
-*/
 
 	// Calculate ideal board size based on dimensions of the whole page
 	var boardSize = Math.min( $('html').height(), $('html').width() );
@@ -23,7 +37,6 @@ $('#scoreselect').live( 'pagecreate', function() {
 		size : boardSize ,
 		selectionCallback : valueSelected,
 		hoverCallback : function( value ) {
-			console.log('hover: ' + value);
 			$('#score').html( value );
 
 		}
