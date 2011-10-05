@@ -150,6 +150,12 @@ DartBoard.prototype.draw2 = function() {
 		if( typeof(this.thing) !== 'undefined' ) {
 			this.thing.attr( { fill: this.color } );
 		}
+		if( typeof(board.hoverCallback) === 'function' ) {
+			board.hoverCallback( "" );
+		}
+
+
+
 	});
 
 
