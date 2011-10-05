@@ -34,6 +34,19 @@ DartBoard.prototype.getSliceOffsets = function( radius ) {
 }
 
 
+DartBoard.prototype.getSlicePath = function( r1, r2 ) {
+
+	var offs1 = this.getSliceOffsets( r1 );
+	var offs2 = this.getSliceOffsets( r2 );	
+
+	var str = "M " + (this.center - offs1.offX) + " " + (this.center + offs1.offY) + " "; 
+	str += "S " + this.center + " " + offs1.curveApexY  + " " + (this.center + offs1.offX) + " " + (this.center + offs1.offY) + " ";
+	str += "L " + (this.center + offs2.offX) + " " + (this.center + offs2.offY) + " ";
+	str += "S " + this.center + " " + offs2.curveApexY + " " + (this.center - offs2.offX) + " " + (this.center + offs2.offY) + " Z"; 
+	return str;
+}
+
+
 DartBoard.prototype.draw2 = function() {
 	var offset = $(this.elem).offset();
 	this.paper = Raphael( offset.left, offset.top, $(this.elem).width(), $(this.elem).height());
@@ -47,25 +60,9 @@ DartBoard.prototype.draw2 = function() {
 
 	//this.logo = this.paper.image( 'http://www.leanmeantech.com/static/images/logo.png', center-(292/2), center*2 - 100, 296, 68); 
 
-	var scoreRingOffs = this.getSliceOffsets( radius );
-
-	var slicePath = "M " + this.center + " " + this.center + " ";
-
-	slicePath += "L " + (this.center - scoreRingOffs.offX) + " " + (this.center + scoreRingOffs.offY) + " "; 
-	slicePath += "S " + this.center + " " + scoreRingOffs.curveApexY  + " " + (this.center + scoreRingOffs.offX) + " " + (this.center + scoreRingOffs.offY) + " Z"; 
-
-	this.slicePath = slicePath;
-
-
-	var doubleRingOffs = this.getSliceOffsets( radius * 0.90 );
-	
-	var doubleSlicePath = "M " + (this.center - scoreRingOffs.offX) + " " + (this.center + scoreRingOffs.offY) + " "; 
-	doubleSlicePath += "S " + this.center + " " + scoreRingOffs.curveApexY  + " " + (this.center + scoreRingOffs.offX) + " " + (this.center + scoreRingOffs.offY) + " ";
-	doubleSlicePath += "L " + (this.center + doubleRingOffs.offX) + " " + (this.center + doubleRingOffs.offY) + " ";
-	doubleSlicePath += "S " + this.center + " " + doubleRingOffs.curveApexY + " " + (this.center - doubleRingOffs.offX) + " " + (this.center + doubleRingOffs.offY) + " Z"; 
-
-	this.doubleSlicePath = doubleSlicePath;	
-
+	this.slicePath = this.getSlicePath( 0, radius );
+	this.doubleSlicePath = this.getSlicePath( radius*0.90, radius );
+	this.tripleSlicePath = this.getSlicePath (radius *0.60, radius *0.65);
 
 	console.log(this.slicePath);
 
@@ -77,13 +74,16 @@ DartBoard.prototype.draw2 = function() {
 		var value = numbers[i];
 		var slice = this.paper.path( this.slicePath );
 		var doubleSlice = this.paper.path( this.doubleSlicePath );
+		var tripleSlice = this.paper.path( this.tripleSlicePath );
 		
+
+		slice.rotate(  i*18  , this.center, this.center );		
+		doubleSlice.rotate(  i*18  , this.center, this.center );		
+		tripleSlice.rotate( i*18, this.center, this.center );
+
 		var pointText = this.paper.text( this.center, this.center+ 1.12*radius, value )
 			.attr( {'font-size': radius/6 , stroke: this.boardColors.white, fill: this.boardColors.white} );
 
-		
-		doubleSlice.rotate(  i*18  , this.center, this.center );		
-		slice.rotate(  i*18  , this.center, this.center );		
 		pointText.rotate( i*18, this.center, this.center );
 		pointText.rotate( -i*18, this.center, this.center + 1.12*radius );
 
@@ -91,15 +91,17 @@ DartBoard.prototype.draw2 = function() {
 		if( i % 2 == 0 ) {
 			slice.node.color = this.boardColors.black;
 			doubleSlice.node.color = this.boardColors.red;
+			tripleSlice.node.color = this.boardColors.green;
 		} else {
 			slice.node.color = this.boardColors.light;
 			doubleSlice.node.color = this.boardColors.green;
+			tripleSlice.node.color = this.boardColors.red;
 		}
 
 		slice.attr( { stroke: this.boardColors.white, fill: slice.node.color, 'stroke-width': 1 } );
 		
 		doubleSlice.attr( { stroke: this.boardColors.white, fill: doubleSlice.node.color, 'stroke-width': 1 } );
-
+		tripleSlice.attr( { stroke: this.boardColors.white, fill: tripleSlice.node.color, 'stroke-width': 1 } );
 
 		slice.node.pointval = value;
 		
