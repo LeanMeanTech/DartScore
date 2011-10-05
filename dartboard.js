@@ -5,8 +5,11 @@ function DartBoard( parms ){
 
 	this.zoomFactor = 2;
 
-	// Calculate the board size 
-	this.size = Math.min( $(this.elem).height(), $(this.elem).width() );
+	if( parms.size ) {
+		this.size = parms.size;
+	} else {
+		this.size = Math.min( $(this.elem).height(), $(this.elem).width() );
+	}
 
 	console.log('size: ' + this.size );
 

@@ -1,17 +1,39 @@
-<html style="height:100%">
+<!DOCTYPE html> 
+
+<html>
 	<head>
+		<title>DartScore</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+		<link rel="stylesheet" href="jquery.mobile-1.0rc1/jquery.mobile-1.0rc1.min.css" />
+
 		<script src="jquery-1.6.4.min.js"></script>
+		<script src="jquery.mobile-1.0rc1/jquery.mobile-1.0rc1.min.js"></script>
+
 		<script src="raphael-min.js"></script>
 		<script src="dartboard.js"></script>
 		<script src="darts.js"></script>
 	</head>
 
-	<body style="height: 90%">
-		<div style="width:100%;height:100%">
-			<span style="font-size:40px;">DartScore</span>
-		
-			<div id="board" style="width:100%;height:100%"></div>
+	<body>
+
+		<!-- splash -->
+		<div data-role="page" id="mainmenu">
+			<div data-role="header">DartScore</div>
+			<div data-role="content">
+			<p><a href="#scoreselect" data-role="button">Score Select</a></p>
+			</div>
+
 		</div>
-		<div style="font-size: 50px" id="score"></div>
+
+		<!-- scoreselect -->
+		<div data-role="page" id="scoreselect" data-add-back-btn="true">
+			<div data-role="header"><h1>Dartscore</h1></div>
+			<div data-role="content">
+				<div id="board"></div>
+				<div style="font-size: 50px" id="score"></div>
+			</div>
+		</div>
 	</body>
 </html>
