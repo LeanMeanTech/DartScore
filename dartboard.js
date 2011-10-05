@@ -1,6 +1,8 @@
 function DartBoard( parms ){
 	this.elem = parms.elem;
 	this.selectionCallback = parms.selectionCallback;
+	this.hoverCallback = parms.hoverCallback;
+
 	this.zoomFactor = 2;
 
 	// Calculate the board size 
@@ -104,35 +106,53 @@ DartBoard.prototype.draw2 = function() {
 		tripleSlice.attr( { stroke: this.boardColors.white, fill: tripleSlice.node.color, 'stroke-width': 1 } );
 
 		slice.node.pointval = value;
-		
+		doubleSlice.node.pointval = 'D' + value;
+		tripleSlice.node.pointval = 'T' + value;	
+	
 		// Save a reference to the raphael object
 		slice.node.thing = slice;
-
-		board = this;
-
-		$(slice.node).click( function(e) {
-			board.selectionCallback( this.pointval );
-			console.log('click ', this.pointval );
-		});
-
-		$(slice.node).bind( 'mouseover', function() {
-			console.log( this.pointval );
-			this.thing.attr({ fill : board.boardColors.highlight });
-		}).bind( 'mouseout', function() {
-			this.thing.attr( { fill: this.color } );
-		});
-
-		
+		doubleSlice.node.thing = doubleSlice;
+		tripleSlice.node.thing  = tripleSlice;
 
 	}
 		
-
 	this.singleBull = this.paper.circle( this.center, this.center, radius/8 )
 				.attr( { fill: this.boardColors.green } );
-
+	this.singleBull.node.color = this.boardColors.green;
+	this.singleBull.node.thing = this.singleBull;
+	this.singleBull.node.pointval = 25;
 
 	this.doubleBull = this.paper.circle( this.center, this.center, radius/16 )
 				.attr( { fill: this.boardColors.red } );
+
+	this.doubleBull.node.pointval = 50;
+	this.doubleBull.node.color = this.boardColors.red;
+	this.doubleBull.node.thing = this.doubleBull;
+
+	// Add handlers
+	var board = this;
+	$('svg *').click( function(e) {
+		if( typeof(  board.selectionCallback === 'function') ) {
+			if( typeof( this.pointval ) !== 'undefined' ) {
+				board.selectionCallback( this.pointval );
+			}
+		}
+	}).bind( 'mouseover', function() {
+		console.log( this );
+		if( typeof(this.thing) !== 'undefined' ) {
+			this.thing.attr({ fill : board.boardColors.highlight });
+			if( typeof(board.hoverCallback) === 'function' ) {
+				board.hoverCallback( this.pointval );
+			}
+
+		}
+	}).bind( 'mouseout', function() {
+		if( typeof(this.thing) !== 'undefined' ) {
+			this.thing.attr( { fill: this.color } );
+		}
+	});
+
+
 
 
 };

@@ -16,6 +16,11 @@ $(document).ready( function() {
 	Board = new DartBoard( {
 		elem: '#board',
 		selectionCallback : valueSelected,
+		hoverCallback : function( value ) {
+			console.log('hover: ' + value);
+			$('#score').html( value );
+
+		}
 	});
 
 });
