@@ -38,7 +38,6 @@
 			#right {
 				float	: left;
 				width	: 380px;
-				border	: 3px dotted red;
 				height	: 40px;
 			}
 	
@@ -46,6 +45,9 @@
 			#board {
 				width	: 90%;
 				height	: 90%;
+				margin-left: auto;
+				margin-right: auto;
+				margin-top : 4px;
 			}
 
 			#score {
@@ -55,9 +57,24 @@
 				border	: 2px solid black;
 				text-align: center;
 				margin-left: auto;
-				margin-right: auto;	
+				margin-right: auto;
+				margin-top: 4px;	
 			}
 			
+			#players > div {
+				font-size: 24px;
+				padding : 5px;
+				border-bottom: 1px solid black;
+			}
+
+			#players > div > span {
+				padding : 3px;
+				float: right;
+			}
+			
+			.highlighted_player {
+				background : #ffff00;
+			}
 
 		</style>
 		
@@ -75,7 +92,7 @@
 			</div>
 		
 			<div id="right">
-
+				<div id="players"></div>
 
 			</div>
 
