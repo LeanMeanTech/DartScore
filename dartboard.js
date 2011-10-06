@@ -1,5 +1,5 @@
 function DartBoard( parms ){
-	this.elem = parms.elem;
+	this.elem = $(parms.elem)[0];
 	this.selectionCallback = parms.selectionCallback;
 	this.hoverCallback = parms.hoverCallback;
 
@@ -54,7 +54,11 @@ DartBoard.prototype.getSlicePath = function( r1, r2 ) {
 
 DartBoard.prototype.draw2 = function() {
 	var offset = $(this.elem).offset();
-	this.paper = Raphael( offset.left, offset.top, $(this.elem).width(), $(this.elem).height());
+//	this.paper = Raphael( offset.left, offset.top, $(this.elem).width(), $(this.elem).height());
+
+	console.log( "inserting into " + this.elem );
+	this.paper = Raphael( this.elem, this.size, this.size );
+
 
 	var radius = (this.size/2) * .72;
 	this.center = this.size/2;

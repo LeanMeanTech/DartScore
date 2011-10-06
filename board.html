@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<title>DartScore - board</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+		<script src="jquery-1.6.4.min.js"></script>
+
+		<script src="raphael-min.js"></script>
+		<script src="dartboard.js"></script>
+
+		<style type="text/css">
+			#board{
+				width	: 700px;
+				height	: 700px;
+			}
+		
+		</style>
+
+
+		<script>
+			$(document).ready( function() {
+				console.log('hello dart test');
+		
+				var board = new DartBoard( {
+
+					elem: '#board',
+
+					selectionCallback : function( val ) {
+						console.log( 'selected: ' + val );
+					},
+
+					hoverCallback : function( val ) {
+						console.log( 'hover: ' + val);
+					},
+		
+
+
+				});
+
+			});
+
+		</script>
+
+	</head>
+
+	<body>
+		<div id="board"></div>
+
+	</body>
+
+</html>

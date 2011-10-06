@@ -1,0 +1,85 @@
+<!DOCTYPE html> 
+
+<html>
+	<head>
+		<title>DartScore - x01</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+		<script src="jquery-1.6.4.min.js"></script>
+
+		<script src="raphael-min.js"></script>
+		<script src="dartboard.js"></script>
+		<script src="gametype.js"></script>
+		<script src="x01.js"></script>
+
+
+		<style type="text/css">
+			html, body {
+				height	: 98%;
+				padding	: 0;
+				margin	: 0;	
+			}
+
+			body > div {
+				width	: 1000px;
+				height	: 100%;
+				border	: 3px solid red;
+	
+			}
+
+			#left {
+				float	: left;
+				width	: 600px;
+				height	: 600px;
+				background: #cfcfcf;
+			}
+		
+			#right {
+				float	: left;
+				width	: 380px;
+				border	: 3px dotted red;
+				height	: 40px;
+			}
+	
+
+			#board {
+				width	: 90%;
+				height	: 90%;
+			}
+
+			#score {
+				width	: 10%;
+				height	: 7%;
+				font-size: 32px;
+				border	: 2px solid black;
+				text-align: center;
+				margin-left: auto;
+				margin-right: auto;	
+			}
+			
+
+		</style>
+		
+	</head>
+
+	<body>
+
+		<div>
+			
+			<div id="left">
+				<div id="board"></div>
+
+				<div id="score"></div>
+
+			</div>
+		
+			<div id="right">
+
+
+			</div>
+
+		</div>
+
+	</body>
+</html>

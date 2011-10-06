@@ -1,10 +1,3 @@
-var Board;
-
-function valueSelected( val ) {
-	alert( 'value selected: ' + val );
-}
-
-
 $('#mainmenu').live( 'pagecreate', function() {
 
 
@@ -37,26 +30,6 @@ $('#playerselect').live( 'pagecreate', function() {
 		var chkName = 'c_' + player;
 		$('#playerselect legend').after( '<input type="checkbox" name="' +chkName + '" class="custom" /><label for="' + chkName + '">' + player + '</label>');
 	}
-
-});
-
-
-$('#scoreselect').live( 'pagecreate', function() {
-
-	// Calculate ideal board size based on dimensions of the whole page
-	var boardSize = Math.min( $('html').height(), $('html').width() );
-	boardSize *=0.90;
-	$('#board').height( boardSize ).width( boardSize );
-	
-	Board = new DartBoard( {
-		elem : '#board',
-		size : boardSize ,
-		selectionCallback : valueSelected,
-		hoverCallback : function( value ) {
-			$('#score').html( value );
-
-		}
-	});
 
 });
 
