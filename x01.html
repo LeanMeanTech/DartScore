@@ -4,7 +4,7 @@
 	<head>
 		<title>DartScore - x01</title>
 
-		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1;"><!-- user-scalable=no"> -->
 
 		<script src="jquery-1.6.4.min.js"></script>
 
@@ -13,48 +13,47 @@
 		<script src="gametype.js"></script>
 		<script src="x01.js"></script>
 
+		<script>
+			$(document).ready( function() {
+				setTimeout(function() {window.scrollTo(0, 1);},100);
+
+			});
+
+		</script>
+
 
 		<style type="text/css">
 			html, body {
-				height	: 98%;
+				height	: 100%;
+				width	: 100%;
 				padding	: 0;
 				margin	: 0;	
 			}
 
-			body > div {
-				width	: 1000px;
+			#scoreinput {
+				width	: 100%;
 				height	: 100%;
-				border	: 3px solid red;
-	
-			}
-
-			#left {
-				float	: left;
-				width	: 600px;
-				height	: 600px;
 				background: #cfcfcf;
 			}
 		
-			#right {
-				float	: left;
-				width	: 380px;
-				height	: 40px;
+			#scoreboard {
+				width	: 100%;
 			}
 	
 
 			#board {
-				width	: 90%;
-				height	: 90%;
+				float	: right;
+				width	: 20%;
 				margin-left: auto;
 				margin-right: auto;
 				margin-top : 4px;
 			}
 
 			#score {
+				float	: left;
 				width	: 10%;
 				height	: 7%;
 				font-size: 32px;
-				border	: 2px solid black;
 				text-align: center;
 				margin-left: auto;
 				margin-right: auto;
@@ -63,18 +62,55 @@
 			
 			#players > div {
 				font-size: 24px;
-				padding : 5px;
+				width	: 100%;
 				border-bottom: 1px solid black;
 			}
 
 			#players > div > span {
+				position: absolute;
+				right	: 0px;
 				padding : 3px;
-				float: right;
+			
 			}
+
 			
 			.highlighted_player {
 				background : #ffff00;
 			}
+
+
+			.button {
+    				border		: 1px solid black;
+				border-radius	: 8px;	
+				padding		: 8px;
+				font-size	: 24px;
+				text-decoration	: none;
+				background	: #cfcfcf;
+				
+			}
+
+			#scoreinput {
+				width : 100%;
+				text-align: center;
+				border : 1px solid red;
+				margin-top: 20px;
+			}
+
+			#scoreinput > * {
+				display: inline;
+			}
+	
+			#smallboard {
+				width	: 25%;
+				height	: 25%;
+			}
+
+	
+			#bigboard {
+				position	: absolute;
+				width		: 100%;
+				height		: 100%;
+			}	
 
 		</style>
 		
@@ -82,21 +118,19 @@
 
 	<body>
 
-		<div>
-			
-			<div id="left">
-				<div id="board"></div>
-
-				<div id="score"></div>
-
-			</div>
+		<div id="bigboard"></div>
 		
-			<div id="right">
-				<div id="players"></div>
-
-			</div>
-
+		<div id="scoreboard">
+			<div id="players"></div>
 		</div>
+
+		<div id="scoreinput">
+			<a href="#" id="undo"  class="button">Undo</a>
+			<input type="number" id="score"></input>
+		
+			<div id="smallboard"></div>
+		</div>
+	
 
 	</body>
 </html>

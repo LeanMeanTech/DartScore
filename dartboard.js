@@ -1,14 +1,24 @@
 function DartBoard( parms ){
 	this.elem = $(parms.elem)[0];
-	this.selectionCallback = parms.selectionCallback;
-	this.hoverCallback = parms.hoverCallback;
+
+	this.onSelected = parms.onSelected;
+	this.onHover = parms.onHover;
+	this.onTouchDown = parms.onTouchDown;
+	this.onTouchUp = parms.onTouchUp;
+	
+	if( typeof( parms.highlightSelection ) != 'undefined' ) {
+		this.highlightSelection = parms.highlightSelection;
+	} else {
+		this.highlightSelection = true;
+	}
+	
 
 	this.zoomFactor = 2;
 
 	if( parms.size ) {
 		this.size = parms.size;
 	} else {
-		this.size = Math.min( $(this.elem).height(), $(this.elem).width() );
+		this.size = $(this.elem).width();
 	}
 
 	console.log('size: ' + this.size );
@@ -22,8 +32,8 @@ function DartBoard( parms ){
 		highlight : '#ff0'
 	}
 
-//	this.draw();
-	this.draw2();
+	this.draw();
+	this.addHandlers();
 }
 
 
@@ -52,9 +62,8 @@ DartBoard.prototype.getSlicePath = function( r1, r2 ) {
 }
 
 
-DartBoard.prototype.draw2 = function() {
+DartBoard.prototype.draw = function() {
 	var offset = $(this.elem).offset();
-//	this.paper = Raphael( offset.left, offset.top, $(this.elem).width(), $(this.elem).height());
 
 	console.log( "inserting into " + this.elem );
 	this.paper = Raphael( this.elem, this.size, this.size );
@@ -151,35 +160,32 @@ DartBoard.prototype.draw2 = function() {
 	this.doubleBull.node.color = this.boardColors.red;
 	this.doubleBull.node.thing = this.doubleBull;
 
-	// Add handlers
+};
+
+
+DartBoard.prototype.addHandlers = function() {
+	
 	var board = this;
-	$('svg *').click( function(e) {
-		if( typeof(  board.selectionCallback === 'function') ) {
+
+	if( typeof(this.onTouchDown) != 'undefined' ) {
+		$(this.elem).bind( 'touchdown mousedown', function(e) {
+			board.onTouchDown();
+		});
+
+	}
+
+
+
+
+	$('#' + this.elem.id + ' svg *').click( function(e) {
+		if( typeof( board.onSelected ) === 'function' ) {
 			if( typeof( this.pointval ) !== 'undefined' ) {
-				board.selectionCallback( this.pointval, this.shorthand );
+				board.onSelected( this.pointval, this.shorthand );
 			}
 		}
-	});/*.bind( 'mouseover', function() {
-		//console.log( this );
-		if( typeof(this.thing) !== 'undefined' ) {
-			this.thing.attr({ fill : board.boardColors.highlight });
-			if( typeof(board.hoverCallback) === 'function' ) {
-				board.hoverCallback( this.pointval );
-			}
+	});
 
-		}
-	}).bind( 'mouseout', function() {
-		if( typeof(this.thing) !== 'undefined' ) {
-			this.thing.attr( { fill: this.color } );
-		}
-		if( typeof(board.hoverCallback) === 'function' ) {
-			board.hoverCallback( "" );
-		}
-
-
-	});*/
-
-	$('svg').bind('touchmove mousemove', function(e){
+	$('#' + this.elem.id + ' svg').bind('touchmove mousemove', function(e){
 		e.preventDefault();
 		
 		var pageX; // These will be found differently
@@ -195,12 +201,10 @@ DartBoard.prototype.draw2 = function() {
 		}
 	
 	
-		var x = pageX + $(this).offset().left;
-		var y = pageY + $(this).offset().top;
+		//console.log('x: ' + x + ' y: ' + y);
 
-		var selected = board.paper.getElementByPoint( x, y );
+		var selected = board.paper.getElementByPoint( pageX, pageY );
 
-	
 		if( selected == board.selected ) {
 			return;
 		}
@@ -211,7 +215,9 @@ DartBoard.prototype.draw2 = function() {
 
 		if( null == selected ) {
 			// left board
-			board.hoverCallback('');
+			if( typeof(board.onHover) != 'undefined' ) {
+				board.onHover('');
+			}
 			return;
 		}
 
@@ -219,10 +225,15 @@ DartBoard.prototype.draw2 = function() {
 			return;
 		}
 
-		selected.attr({ fill : board.boardColors.highlight });		
-		board.hoverCallback( selected.node.pointval );
+		if( board.highlightSelection ) {
+			selected.attr({ fill : board.boardColors.highlight });		
+		}
+
+		if( typeof(board.onHover) == 'function') {
+			board.onHover( selected.node.pointval );
+		}
 		board.selected = selected;
 	});
 
-};
 
+};

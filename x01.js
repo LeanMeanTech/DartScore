@@ -1,3 +1,4 @@
+var SmallBoard;
 var Board;
 
 var INITIAL_SCORE = 301;
@@ -37,6 +38,9 @@ function valueSelected( val ) {
 		nextPlayer();
 	}
 
+	$('#bigboard').hide();
+	$('#smallboard').show();
+
 
 }
 
@@ -69,18 +73,36 @@ function nextPlayer(){
 $(document).ready( function() {
 
 	// Calculate ideal board size based on dimensions of the whole page
-	var boardSize = Math.min( $('#board').height(), $('#boad').width() );
-	boardSize *= 0.90;
 	
-	Board = new DartBoard( {
-		elem : '#board',
-		size : boardSize ,
-		selectionCallback : valueSelected,
-		hoverCallback : function( value ) {
-			$('#score').html( value );
+	SmallBoard = new DartBoard( {
+		elem	: '#smallboard',
+		highlightSelection : false,
+
+		//selectionCallback : valueSelected,
+		onTouchDown : function( value ) {
+			console.log('ffff');
+			$('#smallboard').hide();
+			$('#bigboard').show();
+
+		},
+		
+		onTouchUp : function( value ) {
+
 
 		}
 	});
+
+	Board = new DartBoard( {
+		elem : '#bigboard',
+		onSelected	: valueSelected,
+		onHover 	: function( value ) {
+			$('#score').val( value );
+		}
+
+	});
+
+
+	$('#bigboard').hide();
 
 
 	for( var i=0; i < Players.length; i++ ) {
