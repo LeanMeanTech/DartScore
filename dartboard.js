@@ -96,7 +96,6 @@ DartBoard.prototype.draw2 = function() {
 		var doubleSlice = this.paper.path( this.doubleSlicePath );
 		var tripleSlice = this.paper.path( this.tripleSlicePath );
 		
-
 		slice.rotate(  i*18  , this.center, this.center );		
 		doubleSlice.rotate(  i*18  , this.center, this.center );		
 		tripleSlice.rotate( i*18, this.center, this.center );
@@ -161,7 +160,7 @@ DartBoard.prototype.draw2 = function() {
 			}
 		}
 	}).bind( 'mouseover', function() {
-		console.log( this );
+		//console.log( this );
 		if( typeof(this.thing) !== 'undefined' ) {
 			this.thing.attr({ fill : board.boardColors.highlight });
 			if( typeof(board.hoverCallback) === 'function' ) {
@@ -178,11 +177,7 @@ DartBoard.prototype.draw2 = function() {
 		}
 
 
-
 	});
-
-
-
 
 };
 

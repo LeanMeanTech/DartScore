@@ -22,6 +22,10 @@
 			$(document).ready( function() {
 				console.log('hello dart test');
 		
+				$(document).bind('touchstart', function(e) {
+					e.preventDefault();
+				});
+
 				var board = new DartBoard( {
 
 					elem: '#board',
