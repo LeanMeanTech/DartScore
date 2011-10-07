@@ -159,7 +159,7 @@ DartBoard.prototype.draw2 = function() {
 				board.selectionCallback( this.pointval, this.shorthand );
 			}
 		}
-	}).bind( 'mouseover', function() {
+	});/*.bind( 'mouseover', function() {
 		//console.log( this );
 		if( typeof(this.thing) !== 'undefined' ) {
 			this.thing.attr({ fill : board.boardColors.highlight });
@@ -177,6 +177,51 @@ DartBoard.prototype.draw2 = function() {
 		}
 
 
+	});*/
+
+	$('svg').bind('touchmove mousemove', function(e){
+		e.preventDefault();
+		
+		var pageX; // These will be found differently
+		var pageY; // for the 'touch' vs 'mouse' case
+
+		if( typeof( e.originalEvent.touches ) == 'undefined' ) {
+			// mouse case
+			pageX = e.pageX;
+			pageY = e.pageY;
+		} else {
+			pageX = e.originalEvent.touches[0].pageX;
+			pageY = e.originalEvent.touches[0].pageY;
+		}
+	
+	
+		var x = pageX + $(this).offset().left;
+		var y = pageY + $(this).offset().top;
+
+		var selected = board.paper.getElementByPoint( x, y );
+
+	
+		if( selected == board.selected ) {
+			return;
+		}
+		if( typeof(board.selected) != 'undefined' && board.selected != null ) {
+			board.selected.attr( { fill: board.selected.node.color } );
+		}	
+
+
+		if( null == selected ) {
+			// left board
+			board.hoverCallback('');
+			return;
+		}
+
+		if( typeof(selected.node.pointval) == 'undefined' ) {
+			return;
+		}
+
+		selected.attr({ fill : board.boardColors.highlight });		
+		board.hoverCallback( selected.node.pointval );
+		board.selected = selected;
 	});
 
 };
