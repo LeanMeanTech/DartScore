@@ -65,7 +65,18 @@ DartBoard.prototype.draw2 = function() {
 
 	this.outterBoard = this.paper.circle(
 		this.center, this.center, this.size/2)
-		.attr( 'fill', this.boardColors.black );
+		.attr( {
+			fill	: this.boardColors.black,
+			stroke	: this.boardColors.white,
+			'stroke-width' : 3 
+		} );
+
+
+	this.outterBoard.node.color = this.boardColors.black;
+	this.outterBoard.node.thing = this.outterBoard;
+
+	this.outterBoard.node.pointval = 0;
+	this.outterBoard.node.shorthand = 'OUT';
 
 	//this.logo = this.paper.image( 'http://www.leanmeantech.com/static/images/logo.png', center-(292/2), center*2 - 100, 296, 68); 
 
@@ -127,14 +138,14 @@ DartBoard.prototype.draw2 = function() {
 	}
 		
 	this.singleBull = this.paper.circle( this.center, this.center, radius/8 )
-				.attr( { fill: this.boardColors.green } );
+				.attr( { fill: this.boardColors.green, stroke : this.boardColors.white, 'stroke-width' : 1 } );
 	this.singleBull.node.color = this.boardColors.green;
 	this.singleBull.node.thing = this.singleBull;
 	this.singleBull.node.pointval = 25;
 	this.singleBull.node.shorthand = 25;
 
 	this.doubleBull = this.paper.circle( this.center, this.center, radius/16 )
-				.attr( { fill: this.boardColors.red } );
+				.attr( { fill: this.boardColors.red,  stroke : this.boardColors.white, 'stroke-width' : 1 } );
 
 	this.doubleBull.node.pointval = 50;
 	this.doubleBull.node.shorthand = 50;
@@ -150,7 +161,7 @@ DartBoard.prototype.draw2 = function() {
 			}
 		}
 	}).bind( 'mouseover', function() {
-		//console.log( this );
+		console.log( this );
 		if( typeof(this.thing) !== 'undefined' ) {
 			this.thing.attr({ fill : board.boardColors.highlight });
 			if( typeof(board.hoverCallback) === 'function' ) {
