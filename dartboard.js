@@ -113,8 +113,11 @@ DartBoard.prototype.draw2 = function() {
 		tripleSlice.attr( { stroke: this.boardColors.white, fill: tripleSlice.node.color, 'stroke-width': 1 } );
 
 		slice.node.pointval = value;
-		doubleSlice.node.pointval = 'D' + value;
-		tripleSlice.node.pointval = 'T' + value;	
+		slice.node.shorthand = value;
+		doubleSlice.node.pointval = 2*value;
+		doubleSlice.node.shorthand = 'D' + value;
+		tripleSlice.node.pointval = 3*value;
+		tripleSlice.node.shorthand = 'T' + value;	
 	
 		// Save a reference to the raphael object
 		slice.node.thing = slice;
@@ -128,11 +131,13 @@ DartBoard.prototype.draw2 = function() {
 	this.singleBull.node.color = this.boardColors.green;
 	this.singleBull.node.thing = this.singleBull;
 	this.singleBull.node.pointval = 25;
+	this.singleBull.node.shorthand = 25;
 
 	this.doubleBull = this.paper.circle( this.center, this.center, radius/16 )
 				.attr( { fill: this.boardColors.red } );
 
 	this.doubleBull.node.pointval = 50;
+	this.doubleBull.node.shorthand = 50;
 	this.doubleBull.node.color = this.boardColors.red;
 	this.doubleBull.node.thing = this.doubleBull;
 
@@ -141,7 +146,7 @@ DartBoard.prototype.draw2 = function() {
 	$('svg *').click( function(e) {
 		if( typeof(  board.selectionCallback === 'function') ) {
 			if( typeof( this.pointval ) !== 'undefined' ) {
-				board.selectionCallback( this.pointval );
+				board.selectionCallback( this.pointval, this.shorthand );
 			}
 		}
 	}).bind( 'mouseover', function() {

@@ -5,6 +5,7 @@ var THROWS_PER_TURN = 3;
 
 var Players = ['Jeff', 'Artur'];
 var Scores = [];
+var PrevScore; // In case of bust and we need to revert;
 var CurrentPlayer = 0;
 
 var ThrowNum = 0;
@@ -13,15 +14,29 @@ var ThrowNum = 0;
 
 function valueSelected( val ) {
 
-	Scores[CurrentPlayer] -= val;
+	if( val == Scores[CurrentPlayer] ) {
+		alert( Players[CurrentPlayer] + ' wins!');
+		return;
+	}
+
+	if( val > Scores[CurrentPlayer] ) {
+		alert('Bust!');
+		Scores[CurrentPlayer] = PrevScore;
+		updateScores();
+		nextPlayer();
+		return;		
+
+	}
+	
+	Scores[CurrentPlayer] -= val; 
 	updateScores();
 	
 	ThrowNum++;
 	if( THROWS_PER_TURN == ThrowNum )
 	{
-		ThrowNum = 0;
 		nextPlayer();
 	}
+
 
 }
 
@@ -35,11 +50,14 @@ function updateScores( ) {
 
 }
 
+
 function nextPlayer(){
 	$('#players div').eq(CurrentPlayer).removeClass( 'highlighted_player' );
 	
 	CurrentPlayer = (CurrentPlayer+1) % Players.length;
-	
+	ThrowNum = 0;
+	PrevScore = Scores[CurrentPlayer];	
+
 	console.log(CurrentPlayer);
 	$('#players div').eq(CurrentPlayer).addClass( 'highlighted_player' );
 
