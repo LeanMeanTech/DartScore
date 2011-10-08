@@ -33,6 +33,8 @@ function DartBoard( parms ){
 	}
 	
 	this.edgeBoundaries = [];
+	
+	this.scroll = null;
 
 	this.draw();
 	this.edges();
@@ -237,6 +239,21 @@ DartBoard.prototype.edges = function() {
 //    }
 };
 
+
+DartBoard.prototype.startScrolling = function(x, y) {
+    this.stopScrolling();
+    this.scroll = setInterval(function() {
+        $("#board").prop("scrollLeft", $("#board").scrollLeft() + x*5);
+        $("#board").prop("scrollTop", $("#board").scrollTop() + y*5);
+    }, 50);    
+};
+
+DartBoard.prototype.stopScrolling = function() {
+    if(this.scroll !== null) {
+        clearInterval(this.scroll);
+    }
+};
+
 DartBoard.prototype.onMove = function(x, y) {    
     var action = null;
     
@@ -252,11 +269,10 @@ DartBoard.prototype.onMove = function(x, y) {
     
     
     if(action) {
-        console.warn(action);
-        $("#board").prop("scrollLeft", $("#board").scrollLeft() + action[0]*5);
-        $("#board").prop("scrollTop", $("#board").scrollTop() + action[1]*5);
-    }
-    
+        this.startScrolling(action[0], action[1]);
+    } else {
+        this.stopScrolling()
+    } 
 };
 
 
@@ -282,8 +298,7 @@ DartBoard.prototype.addHandlers = function() {
 		}
 	});
 	
-	
-	$(this.elem).bind( 'touchmove mousemove', function(e) {
+	$(this.elem).bind( 'touchmove mousemove touchend mouseout', function(e) {
         e.preventDefault();
         var pageX; // These will be found differently
         var pageY; // for the 'touch' vs 'mouse' case
@@ -298,7 +313,6 @@ DartBoard.prototype.addHandlers = function() {
         }
         
         board.onMove(pageX, pageY);
-        
     });
 	
 
