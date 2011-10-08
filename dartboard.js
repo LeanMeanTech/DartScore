@@ -31,9 +31,12 @@ function DartBoard( parms ){
 		green: '#008C00',
 		highlight : '#ff0'
 	}
+	
+	this.edgeBoundaries = [];
 
 	this.draw();
-	this.addHandlers();
+	this.edges();
+	this.addHandlers();	
 }
 
 
@@ -67,7 +70,9 @@ DartBoard.prototype.draw = function() {
 
 	console.log( "inserting into " + this.elem );
 	this.paper = Raphael( this.elem, this.size, this.size );
-
+	
+	this.paper.setViewBox(0, 0, this.size, this.size, true);
+	
 
 	var radius = (this.size/2) * .72;
 	this.center = this.size/2;
@@ -162,6 +167,98 @@ DartBoard.prototype.draw = function() {
 
 };
 
+DartBoard.prototype.edges = function() {
+    // TODO: Regenerate on Resize...
+    
+    var size = this.size*0.20;
+    var container = $("#board");
+    var offset = container.offset();
+    
+    console.warn("Defining Actionable Edges " + size);
+    
+    this.edgeBoundaries = [];
+    
+    /*
+     *  0   1   2
+     *  7       3
+     *  6   5   4
+     */
+        
+    this.edgeBoundaries.push([
+          [[offset.left, offset.top], [offset.left+size, offset.top+size]],
+          [-1, -1]
+    ]);
+    
+    this.edgeBoundaries.push([
+          [[offset.left + size, offset.top], [offset.left + container.width() - size , offset.top+size]],
+          [0, -1]
+    ]);
+    
+    this.edgeBoundaries.push([
+          [[offset.left + container.width() - size, offset.top], [offset.left + container.width(), offset.top+size]],
+          [1, -1]
+    ]);
+    
+    this.edgeBoundaries.push([
+          [[offset.left + container.width() - size, offset.top + size], [offset.left + container.width(), offset.top + container.height() - size]],
+          [1, 0]
+    ]);
+
+    this.edgeBoundaries.push([
+          [[offset.left + container.width() - size, offset.top + container.height() - size], [offset.left + container.width(), offset.top + container.height()]],
+          [1, 1]
+    ]);
+    
+    this.edgeBoundaries.push([
+          [[offset.left + size, offset.top + container.height() - size], [offset.left + container.width() - size, offset.top + container.height()]],
+          [0, 1]
+    ]);
+    
+    this.edgeBoundaries.push([
+          [[offset.left, offset.top + container.height() - size], [offset.left + size, offset.top + container.height()]],
+          [-1, 1]
+    ]);
+    
+    this.edgeBoundaries.push([
+          [[offset.left, offset.top + size], [offset.left + size, offset.top + container.height() - size]],
+          [-1, 0]
+    ]);
+    
+//    for(i = 0; i < this.edgeBoundaries.length; i++) {
+//        var edge = this.edgeBoundaries[i];
+//                
+//        var offsetX = edge[0][0][0] + 1;
+//        var offsetY = edge[0][0][1] + 1;
+//        
+//        var width = edge[0][1][0] - offsetX - 1;
+//        var height = edge[0][1][1] - offsetY - 1;
+//                
+//        $("body").append('<div class="edge_debug" style="background:none; color: red; font-size: 24px; border: 1px solid red; top: ' + offsetY + 'px; left: ' + offsetX + 'px; width: ' + width + 'px; height: ' + height + 'px; position: absolute;">'+ edge[1] +'</div>')
+//    }
+};
+
+DartBoard.prototype.onMove = function(x, y) {    
+    var action = null;
+    
+    
+    for(i = 0; i < this.edgeBoundaries.length; i++) {
+        var edge = this.edgeBoundaries[i][0];
+                
+        if(x >= edge[0][0] && x <= edge[1][0] && y >= edge[0][1] && y <= edge[1][1]){
+            action = this.edgeBoundaries[i][1];
+            break;
+        }
+    }
+    
+    
+    if(action) {
+        console.warn(action);
+        $("#board").prop("scrollLeft", $("#board").scrollLeft() + action[0]*5);
+        $("#board").prop("scrollTop", $("#board").scrollTop() + action[1]*5);
+    }
+    
+};
+
 
 DartBoard.prototype.addHandlers = function() {
 	
@@ -184,6 +281,26 @@ DartBoard.prototype.addHandlers = function() {
 			}
 		}
 	});
+	
+	
+	$(this.elem).bind( 'touchmove mousemove', function(e) {
+        e.preventDefault();
+        var pageX; // These will be found differently
+        var pageY; // for the 'touch' vs 'mouse' case
+
+        if( typeof( e.originalEvent.touches ) == 'undefined' ) {
+            // mouse case
+            pageX = e.pageX;
+            pageY = e.pageY;
+        } else {
+            pageX = e.originalEvent.touches[0].pageX;
+            pageY = e.originalEvent.touches[0].pageY;
+        }
+        
+        board.onMove(pageX, pageY);
+        
+    });
+	
 
 	$('#' + this.elem.id + ' svg').bind('touchmove mousemove', function(e){
 		e.preventDefault();
@@ -199,6 +316,8 @@ DartBoard.prototype.addHandlers = function() {
 			pageX = e.originalEvent.touches[0].pageX;
 			pageY = e.originalEvent.touches[0].pageY;
 		}
+		
+//		board.onMove(pageX, pageY);
 	
 	
 		//console.log('x: ' + x + ' y: ' + y);

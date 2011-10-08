@@ -1,56 +1,146 @@
 <html>
-	<head>
-		<title>DartScore - board</title>
+<head>
+	<title>DartScore - board</title>
 
-		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 
-		<script src="jquery-1.6.4.min.js"></script>
+	<script src="jquery-1.6.4.min.js"></script>
 
-		<script src="raphael-min.js"></script>
-		<script src="dartboard.js"></script>
+	<script src="raphael-min.js"></script>
+	<script src="dartboard.js"></script>
 
-		<style type="text/css">
-			#board{
-				width	: 700px;
-				height	: 700px;
-			}
+	<style type="text/css">
+		#board{
+			width	: 700px;
+			height	: 700px;
+			margin: 0px auto 0px auto;
+			position: relative;
+			overflow: hidden;
+		}
+
+        /*
+		#pan_8 {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 255, 255, .5);
+		}
 		
-		</style>
+		#pan_7 {
+            position: absolute;
+            left: 100;
+            top: 0;
+            width: 500px;
+            height: 100px;
+            background: rgba(255, 127, 255, .5);
+        }
+        
+        #pan_6 {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 127, .5);
+        }
+        
+        #pan_5 {
+            position: absolute;
+            right: 0;
+            top: 100;
+            width: 100px;
+            height: 500px;
+            background: rgba(0, 255, 0, .5);
+        }
+        
+        #pan_4 {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 0, 255, .5);
+        }
+        
+        #pan_3 {
+            position: absolute;
+            left: 100;
+            bottom: 0;
+            width: 500px;
+            height: 100px;
+            background: rgba(0, 0, 255, .5);
+        }
+        
+        #pan_2 {
+            position: absolute;
+            left: 0;
+            bottom: 0px;
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 255, 0, .5);
+        }
+        
+        
+        #pan_1 {
+            position: absolute;
+            left: 0;
+            top: 100px;
+            width: 100px;
+            height: 500px;
+            background: rgba(255, 0, 0, .5);
+        }
+        */
+        
+        #over {
+            width: 700px;
+            height: 700px;
+            background: rgba(0, 0, 0, .5);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+        }
+	</style>
 
 
-		<script>
-			$(document).ready( function() {
-				console.log('hello dart test');
-		
-				$(document).bind('touchstart', function(e) {
-					e.preventDefault();
-				});
-
-				var board = new DartBoard( {
-
-					elem: '#board',
-
-					selectionCallback : function( val ) {
-						console.log( 'selected: ' + val );
-					},
-
-					hoverCallback : function( val ) {
-						console.log( 'hover: ' + val);
-					},
-		
-
-
-				});
-
+	<script>
+	    var board;
+		$(document).ready( function() {		
+			$(document).bind('touchstart', function(e) {
+			    e.preventDefault();
 			});
+			
+			board = new DartBoard({
+			    elem: '#board',
+			    selectionCallback : function( val ) {
+			        console.log( 'selected: ' + val );
+		        },
+		        hoverCallback : function( val ) {
+		            console.log( 'hover: ' + val);
+	            }
+			});
+			
+			board.paper.setSize(1400, 1400);
+		});
+	</script>
 
-		</script>
+</head>
 
-	</head>
-
-	<body>
-		<div id="board"></div>
-
-	</body>
-
+<body>
+	<div id="board">
+	   <!--
+	   <div id="pan_8"></div>
+	   <div id="pan_7"></div>
+	   <div id="pan_6"></div>
+	   <div id="pan_5"></div>
+	   <div id="pan_4"></div>
+	   <div id="pan_3"></div>
+	   <div id="pan_2"></div>
+	   <div id="pan_1"></div>
+	   <div id="over"></div>
+	   -->
+	</div>
+</body>
 </html>
