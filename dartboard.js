@@ -316,7 +316,7 @@ DartBoard.prototype.addHandlers = function() {
 	*/
 
 	if( this.zoomSelect || typeof(this.onTouchDown) != 'undefined' ){
-		$(this.elem).bind('touchdown mousedown', function(e) {
+		$(this.elem).bind('touchstart mousedown', function(e) {
 			if( board.zoomSelect && board.zoomState != 'zoomed' ) {
 				//board.paper.setSize( board.size * board.zoomFactor, board.size*board.zoomFactor );
 				var point = pointFromEvent(e);
@@ -349,7 +349,7 @@ DartBoard.prototype.addHandlers = function() {
 
 
 	if( this.zoomSelect || typeof(this.onTouchUp) != 'undefined' ) {
-		$(this.elem).bind('touchup mouseup', function(e) {
+		$(this.elem).bind('touchend mouseup', function(e) {
 			if( board.zoomSelect && board.zoomState == 'zoomed' ) {
 				board.paper.setViewBox( 0, 0, board.size, board.size, false ); 
 				board.zoomState = 'normal';	
