@@ -26,6 +26,7 @@ function DartBoard( parms ){
 		highlightSelection : true,
 		zoomSelect : true,
 		zoomFactor : 2,
+		hotZonePct : .15,
 
 		boardColors : {
         	        black: '#000',
@@ -51,11 +52,12 @@ function DartBoard( parms ){
 	this.elem = $(this.elem)[0];
 
 	if( typeof(this.size) == 'undefined') {
-		this.size = $(this.elem).width();
+		this.size = Math.min($(this.elem).width(), $(this.elem).height());
 	}
 
 	console.log('size: ' + this.size );
 
+	this.hotZoneSize = this.size * this.hotZonePct;
 
 	this.edgeBoundaries = [];
 	
@@ -375,10 +377,20 @@ DartBoard.prototype.addHandlers = function() {
 	
 //		board.onMove(pageX, pageY);
 	
-	
-		//console.log('x: ' + x + ' y: ' + y);
-
+		// getElementByPoint uses absolute coordinates relative to window
 		var selected = board.paper.getElementByPoint( point.x, point.y );
+
+		var off = $(board.elem).offset();
+
+		// For 'hotzome' calculate, make it relative to element
+		point.x -= off.left;
+		point.y -= off.top;
+
+		console.log('x: ' + point.x + ' y: ' + point.y);
+
+		if( board.zoomSelect ) {
+			board.checkHotZones(point.x, point.y);
+		}
 
 		if( selected == board.selected ) {
 			return;
@@ -413,3 +425,16 @@ DartBoard.prototype.addHandlers = function() {
 
 };
 
+
+DartBoard.prototype.checkHotZones = function(x, y) {
+	var s = this.hotZoneSize;
+
+	if( (x < s) || x > (this.size - s) || (y < s) || (y > this.size -s) ) {
+		console.log('zone');
+	} 
+
+
+
+	return true;
+
+};
