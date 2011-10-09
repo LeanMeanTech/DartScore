@@ -1,41 +1,44 @@
 function DartBoard( parms ){
-	this.elem = $(parms.elem)[0];
-
-	this.onSelected = parms.onSelected;
-	this.onHover = parms.onHover;
-	this.onTouchDown = parms.onTouchDown;
-	this.onTouchUp = parms.onTouchUp;
 	
-	if( typeof( parms.highlightSelection ) != 'undefined' ) {
-		this.highlightSelection = parms.highlightSelection;
-	} else {
-		this.highlightSelection = true;
+	// Default values, if not overridder by parameters
+	var defaults = {
+		highlightSelection : true,
+		zoomFactor : 2,
+
+		boardColors : {
+        	        black: '#000',
+               	 	white: '#fff',
+                	red: '#f00',
+               		light: '#E1DCB7',
+                	green: '#008C00',
+                	highlight : '#ff0'
+	        }
+
+
+	};
+
+	for( var key in defaults ) {
+		this[key] = defaults[key];
 	}
-	
 
-	this.zoomFactor = 2;
 
-	if( parms.size ) {
-		this.size = parms.size;
-	} else {
+	for( var key in parms ) {
+		this[key] = parms[key];
+	}
+
+	this.elem = $(this.elem)[0];
+
+	if( typeof(this.size) == 'undefined') {
 		this.size = $(this.elem).width();
 	}
 
 	console.log('size: ' + this.size );
 
-	this.boardColors = {
-		black: '#000',
-		white: '#fff',
-		red: '#f00',
-		light: '#E1DCB7',
-		green: '#008C00',
-		highlight : '#ff0'
-	}
-	
+
 	this.edgeBoundaries = [];
 
 	this.draw();
-	this.edges();
+	//this.edges();
 	this.addHandlers();	
 }
 
@@ -281,25 +284,6 @@ DartBoard.prototype.addHandlers = function() {
 			}
 		}
 	});
-	
-	
-	$(this.elem).bind( 'touchmove mousemove', function(e) {
-        e.preventDefault();
-        var pageX; // These will be found differently
-        var pageY; // for the 'touch' vs 'mouse' case
-
-        if( typeof( e.originalEvent.touches ) == 'undefined' ) {
-            // mouse case
-            pageX = e.pageX;
-            pageY = e.pageY;
-        } else {
-            pageX = e.originalEvent.touches[0].pageX;
-            pageY = e.originalEvent.touches[0].pageY;
-        }
-        
-        board.onMove(pageX, pageY);
-        
-    });
 	
 
 	$('#' + this.elem.id + ' svg').bind('touchmove mousemove', function(e){
