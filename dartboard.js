@@ -3,6 +3,7 @@ function DartBoard( parms ){
 	// Default values, if not overridder by parameters
 	var defaults = {
 		highlightSelection : true,
+		zoomSelect : true,
 		zoomFactor : 2,
 
 		boardColors : {
@@ -21,7 +22,7 @@ function DartBoard( parms ){
 		this[key] = defaults[key];
 	}
 
-
+	// Make all variables passed in parms availble via 'this'
 	for( var key in parms ) {
 		this[key] = parms[key];
 	}
@@ -267,13 +268,37 @@ DartBoard.prototype.addHandlers = function() {
 	
 	var board = this;
 
+
+	/*
 	if( typeof(this.onTouchDown) != 'undefined' ) {
 		$(this.elem).bind( 'touchdown mousedown', function(e) {
 			board.onTouchDown();
 		});
 
 	}
+	*/
 
+	if( this.zoomSelect || typeof(this.onTouchDown) != 'undefined' ){
+		$(this.elem).bind('touchdown mousedown', function(e) {
+			if( board.zoomSelect && board.zoomState != 'zoomed' ) {
+				board.paper.setSize( board.size * board.zoomFactor, board.size*board.zoomFactor );
+				board.zoomState = 'zoomed';
+			}			
+
+
+		});
+	}
+
+
+	if( this.zoomSelect || typeof(this.onTouchUp) != 'undefined' ) {
+		$(this.elem).bind('touchup mouseup', function(e) {
+			if( board.zoomSelect && board.zoomState == 'zoomed' ) {
+				board.paper.setSize( board.size, board.size );
+				board.zoomState = 'normal';	
+			}
+		});
+
+	}
 
 
 
