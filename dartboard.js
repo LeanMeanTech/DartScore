@@ -1,3 +1,24 @@
+
+function pointFromEvent(e) { 
+	// point is calculated different for 'touch' vs 'mouse' case	
+	var ret = {};
+
+	if( typeof( e.originalEvent.touches ) == 'undefined' ) {
+		// mouse case
+		ret.x = e.pageX;
+		ret.y = e.pageY;
+	} else {
+		ret.x = e.originalEvent.touches[0].pageX;
+		ret.y = e.originalEvent.touches[0].pageY;
+	}
+	
+
+	return ret;
+}
+
+
+
+
 function DartBoard( parms ){
 	
 	// Default values, if not overridder by parameters
@@ -297,7 +318,28 @@ DartBoard.prototype.addHandlers = function() {
 	if( this.zoomSelect || typeof(this.onTouchDown) != 'undefined' ){
 		$(this.elem).bind('touchdown mousedown', function(e) {
 			if( board.zoomSelect && board.zoomState != 'zoomed' ) {
-				board.paper.setSize( board.size * board.zoomFactor, board.size*board.zoomFactor );
+				//board.paper.setSize( board.size * board.zoomFactor, board.size*board.zoomFactor );
+				var point = pointFromEvent(e);
+				var off = $(board.elem).offset();
+
+				point.x -= off.left;
+				point.y -= off.top;
+				
+				var xDelta = board.size/2 - point.x;
+				var yDelta = board.size/2 - point.y;
+
+				var xZoom = board.size/2 - ((board.size/2)/board.zoomFactor) - xDelta/2;
+				var yZoom = board.size/2 - ((board.size/2)/board.zoomFactor) - yDelta/2; 
+
+				console.log('xdelta: ' + xDelta + ' ydelta: ' + yDelta);
+
+
+				console.log( point );
+				board.paper.setViewBox(
+					xZoom,
+					yZoom,
+					board.size/board.zoomFactor,
+					board.size/board.zoomFactor, false );
 				board.zoomState = 'zoomed';
 			}			
 
@@ -309,7 +351,7 @@ DartBoard.prototype.addHandlers = function() {
 	if( this.zoomSelect || typeof(this.onTouchUp) != 'undefined' ) {
 		$(this.elem).bind('touchup mouseup', function(e) {
 			if( board.zoomSelect && board.zoomState == 'zoomed' ) {
-				board.paper.setSize( board.size, board.size );
+				board.paper.setViewBox( 0, 0, board.size, board.size, false ); 
 				board.zoomState = 'normal';	
 			}
 		});
@@ -329,24 +371,14 @@ DartBoard.prototype.addHandlers = function() {
 	$('#' + this.elem.id + ' svg').bind('touchmove mousemove', function(e){
 		e.preventDefault();
 		
-		var pageX; // These will be found differently
-		var pageY; // for the 'touch' vs 'mouse' case
-
-		if( typeof( e.originalEvent.touches ) == 'undefined' ) {
-			// mouse case
-			pageX = e.pageX;
-			pageY = e.pageY;
-		} else {
-			pageX = e.originalEvent.touches[0].pageX;
-			pageY = e.originalEvent.touches[0].pageY;
-		}
-		
+		var point = pointFromEvent(e);	
+	
 //		board.onMove(pageX, pageY);
 	
 	
 		//console.log('x: ' + x + ' y: ' + y);
 
-		var selected = board.paper.getElementByPoint( pageX, pageY );
+		var selected = board.paper.getElementByPoint( point.x, point.y );
 
 		if( selected == board.selected ) {
 			return;
@@ -380,3 +412,4 @@ DartBoard.prototype.addHandlers = function() {
 
 
 };
+
