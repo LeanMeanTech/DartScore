@@ -23,12 +23,13 @@ function DartBoard( parms ){
 	
 	// Default values, if not overridder by parameters
 	var defaults = {
-		highlightSelection : true,
-		zoomSelect : true,
-		zoomFactor : 3,
-		hotZonePct : .15,
-
-		boardColors : {
+		highlightSelection	: true,
+		zoomSelect		: true,
+		zoomFactor		: 3,
+		hotZonePct		: .25,
+		panIntervalMS		: 25,
+		
+		boardColors 		: {
         	        black: '#000',
                	 	white: '#fff',
                 	red: '#f00',
@@ -224,12 +225,14 @@ DartBoard.prototype.addHandlers = function() {
 				var xZoom = point.x - point.x/board.zoomFactor;
 				var yZoom = point.y - point.y/board.zoomFactor;
 
+				console.log(xZoom + ',' + yZoom);
 
 				board.setViewBox(
 					xZoom,
 					yZoom,
 					zoomedWindowSize,
 					zoomedWindowSize, false );
+				
 				board.zoomState = 'zoomed';
 			}			
 
@@ -314,24 +317,31 @@ DartBoard.prototype.addHandlers = function() {
 
 
 
-DartBoard.prototype.startPanning = function(xRatio, yRatio) {
-   	this.stopPanning();
-
+DartBoard.prototype.doPan = function doPan( xRatio, yRatio ) {
 	var board = this;
-	this.pan = setInterval(function() {
+	if( this.pan ) {
+		var xDelta = xRatio * 5;
+		var yDelta = yRatio * 5;
 
-	var xDelta = xRatio * 10;
-	var yDelta = yRatio * 10;
+		this.setViewBox( board.viewX + xDelta, board.viewY + yDelta, board.viewWidth, board.viewHeight );
 
-	board.setViewBox( board.viewX + xDelta, board.viewY + yDelta, board.viewWidth, board.viewHeight );
+		setTimeout( function() {
+			board.doPan( xRatio, yRatio );
+		}, board.panIntervalMS ); 
 
-    }, 50);    
+	}
+};
+
+DartBoard.prototype.startPanning = function(xRatio, yRatio) {
+	this.pan = true;  
+ 	//this.stopPanning();
+
+	this.doPan(xRatio, yRatio);
+  
 };
 
 DartBoard.prototype.stopPanning = function() {
-    if(this.pan !== null) {
-        clearInterval(this.pan);
-    }
+    	this.pan = false;
 };
 
 
