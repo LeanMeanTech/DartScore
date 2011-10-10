@@ -77,6 +77,7 @@ $(document).ready( function() {
 	SmallBoard = new DartBoard( {
 		elem	: '#smallboard',
 		highlightSelection : false,
+		zoomSelect : false,
 
 		//selectionCallback : valueSelected,
 		onTouchDown : function( value ) {

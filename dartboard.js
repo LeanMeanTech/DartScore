@@ -220,12 +220,18 @@ DartBoard.prototype.addHandlers = function() {
 
 				point.x -= off.left;
 				point.y -= off.top;
-				
-				var xDelta = board.size/2 - point.x;
-				var yDelta = board.size/2 - point.y;
+			
+				var center = board.size/2;
+				var zoomedWindowSize = board.size/board.zoomFactor;
+	
+				// xDelta, yDelta are the offsets of the current finger position from the center
+				var xDelta = center - point.x;
+				var yDelta = center - point.y;
+			
+				console.log( "xd: " + xDelta + " yd: " + yDelta );
 
-				var xZoom = board.size/2 - ((board.size/2)/board.zoomFactor) - xDelta/2;
-				var yZoom = board.size/2 - ((board.size/2)/board.zoomFactor) - yDelta/2; 
+				var xZoom = center - ((board.size/board.zoomFactor)/2) - (xDelta/2);
+				var yZoom = center - ((board.size/board.zoomFactor)/2) - (yDelta/2); 
 
 				console.log('xdelta: ' + xDelta + ' ydelta: ' + yDelta);
 
@@ -234,8 +240,8 @@ DartBoard.prototype.addHandlers = function() {
 				board.setViewBox(
 					xZoom,
 					yZoom,
-					board.size/board.zoomFactor,
-					board.size/board.zoomFactor, false );
+					zoomedWindowSize,
+					zoomedWindowSize, false );
 				board.zoomState = 'zoomed';
 			}			
 
@@ -269,8 +275,6 @@ DartBoard.prototype.addHandlers = function() {
 		e.preventDefault();
 		
 		var point = pointFromEvent(e);	
-	
-//		board.onMove(pageX, pageY);
 	
 		// getElementByPoint uses absolute coordinates relative to window
 		var selected = board.paper.getElementByPoint( point.x, point.y );
@@ -366,6 +370,7 @@ DartBoard.prototype.checkHotZones = function(x, y) {
 
 };
 
+// Our ouwn setViewBox, so we can save the most recent values.  This way we can move relative 
 DartBoard.prototype.setViewBox = function(x, y, width, height, fit ) {
 	this.viewX = x;
 	this.viewY = y;
