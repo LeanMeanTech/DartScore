@@ -25,7 +25,7 @@ function DartBoard( parms ){
 	var defaults = {
 		highlightSelection : true,
 		zoomSelect : true,
-		zoomFactor : 2,
+		zoomFactor : 3,
 		hotZonePct : .15,
 
 		boardColors : {
@@ -111,8 +111,6 @@ DartBoard.prototype.draw = function() {
 		this.center, this.center, this.size/2)
 		.attr( {
 			fill	: this.boardColors.black,
-			stroke	: this.boardColors.white,
-			'stroke-width' : 3 
 		} );
 
 
@@ -221,22 +219,12 @@ DartBoard.prototype.addHandlers = function() {
 				point.x -= off.left;
 				point.y -= off.top;
 			
-				var center = board.size/2;
 				var zoomedWindowSize = board.size/board.zoomFactor;
 	
-				// xDelta, yDelta are the offsets of the current finger position from the center
-				var xDelta = center - point.x;
-				var yDelta = center - point.y;
-			
-				console.log( "xd: " + xDelta + " yd: " + yDelta );
-
-				var xZoom = center - ((board.size/board.zoomFactor)/2) - (xDelta/2);
-				var yZoom = center - ((board.size/board.zoomFactor)/2) - (yDelta/2); 
-
-				console.log('xdelta: ' + xDelta + ' ydelta: ' + yDelta);
+				var xZoom = point.x - point.x/board.zoomFactor;
+				var yZoom = point.y - point.y/board.zoomFactor;
 
 
-				console.log( point );
 				board.setViewBox(
 					xZoom,
 					yZoom,

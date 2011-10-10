@@ -78,20 +78,14 @@ $(document).ready( function() {
 		elem	: '#smallboard',
 		highlightSelection : false,
 		zoomSelect : false,
-
-		//selectionCallback : valueSelected,
-		onTouchDown : function( value ) {
-			console.log('ffff');
-			$('#smallboard').hide();
-			$('#bigboard').show();
-
-		},
-		
-		onTouchUp : function( value ) {
-
-
-		}
 	});
+
+	$('#smallboard').bind("click", function() {
+		$('#smallboard').hide();
+		$('#bigboard').show();
+
+	});
+
 
 	Board = new DartBoard( {
 		elem : '#bigboard',
