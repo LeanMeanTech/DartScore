@@ -111,7 +111,7 @@ DartBoard.prototype.draw = function() {
 	this.outterBoard = this.paper.circle(
 		this.center, this.center, this.size/2)
 		.attr( {
-			fill	: this.boardColors.black,
+			fill	: this.boardColors.black
 		} );
 
 
