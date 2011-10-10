@@ -23,12 +23,14 @@ $('#playerselect').live( 'pagecreate', function() {
 
 	var players = ['Jeff', 'Artur'];
 
-
 	for( var i = 0; i < players.length; i++ ) {
 		var player = players[i];
 		console.log('Adding ' + player);
 		var chkName = 'c_' + player;
-		$('#playerselect legend').after( '<input type="checkbox" name="' +chkName + '" class="custom" /><label for="' + chkName + '">' + player + '</label>');
+
+		var playerHtml = '<input type="checkbox" id="' + chkName + '" name="' +chkName + '" class="custom" /><label for="' + chkName + '">' + player + '</label>';
+		$('#playerselect legend').after(playerHtml);
+		console.log(playerHtml);
 	}
 
 });
