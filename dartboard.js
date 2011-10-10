@@ -58,6 +58,7 @@ function DartBoard( parms ){
 	console.log('size: ' + this.size );
 
 	this.hotZoneSize = this.size * this.hotZonePct;
+	console.log('hotZoneSize: ' + this.hotZoneSize);
 
 	this.edgeBoundaries = [];
 	
@@ -100,7 +101,7 @@ DartBoard.prototype.draw = function() {
 	console.log( "inserting into " + this.elem );
 	this.paper = Raphael( this.elem, this.size, this.size );
 	
-	this.paper.setViewBox(0, 0, this.size, this.size, true);
+	this.setViewBox(0, 0, this.size, this.size, true);
 	
 
 	var radius = (this.size/2) * .72;
@@ -196,113 +197,6 @@ DartBoard.prototype.draw = function() {
 
 };
 
-DartBoard.prototype.edges = function() {
-    // TODO: Regenerate on Resize...
-    
-    var size = this.size*0.20;
-    var container = $("#board");
-    var offset = container.offset();
-    
-    console.warn("Defining Actionable Edges " + size);
-    
-    this.edgeBoundaries = [];
-    
-    /*
-     *  0   1   2
-     *  7       3
-     *  6   5   4
-     */
-        
-    this.edgeBoundaries.push([
-          [[offset.left, offset.top], [offset.left+size, offset.top+size]],
-          [-1, -1]
-    ]);
-    
-    this.edgeBoundaries.push([
-          [[offset.left + size, offset.top], [offset.left + container.width() - size , offset.top+size]],
-          [0, -1]
-    ]);
-    
-    this.edgeBoundaries.push([
-          [[offset.left + container.width() - size, offset.top], [offset.left + container.width(), offset.top+size]],
-          [1, -1]
-    ]);
-    
-    this.edgeBoundaries.push([
-          [[offset.left + container.width() - size, offset.top + size], [offset.left + container.width(), offset.top + container.height() - size]],
-          [1, 0]
-    ]);
-
-    this.edgeBoundaries.push([
-          [[offset.left + container.width() - size, offset.top + container.height() - size], [offset.left + container.width(), offset.top + container.height()]],
-          [1, 1]
-    ]);
-    
-    this.edgeBoundaries.push([
-          [[offset.left + size, offset.top + container.height() - size], [offset.left + container.width() - size, offset.top + container.height()]],
-          [0, 1]
-    ]);
-    
-    this.edgeBoundaries.push([
-          [[offset.left, offset.top + container.height() - size], [offset.left + size, offset.top + container.height()]],
-          [-1, 1]
-    ]);
-    
-    this.edgeBoundaries.push([
-          [[offset.left, offset.top + size], [offset.left + size, offset.top + container.height() - size]],
-          [-1, 0]
-    ]);
-    
-//    for(i = 0; i < this.edgeBoundaries.length; i++) {
-//        var edge = this.edgeBoundaries[i];
-//                
-//        var offsetX = edge[0][0][0] + 1;
-//        var offsetY = edge[0][0][1] + 1;
-//        
-//        var width = edge[0][1][0] - offsetX - 1;
-//        var height = edge[0][1][1] - offsetY - 1;
-//                
-//        $("body").append('<div class="edge_debug" style="background:none; color: red; font-size: 24px; border: 1px solid red; top: ' + offsetY + 'px; left: ' + offsetX + 'px; width: ' + width + 'px; height: ' + height + 'px; position: absolute;">'+ edge[1] +'</div>')
-//    }
-};
-
-
-DartBoard.prototype.startScrolling = function(x, y) {
-    this.stopScrolling();
-    this.scroll = setInterval(function() {
-        $("#board").prop("scrollLeft", $("#board").scrollLeft() + x*5);
-        $("#board").prop("scrollTop", $("#board").scrollTop() + y*5);
-    }, 50);    
-};
-
-DartBoard.prototype.stopScrolling = function() {
-    if(this.scroll !== null) {
-        clearInterval(this.scroll);
-    }
-};
-
-DartBoard.prototype.onMove = function(x, y) {    
-    var action = null;
-    
-    
-    for(i = 0; i < this.edgeBoundaries.length; i++) {
-        var edge = this.edgeBoundaries[i][0];
-                
-        if(x >= edge[0][0] && x <= edge[1][0] && y >= edge[0][1] && y <= edge[1][1]){
-            action = this.edgeBoundaries[i][1];
-            break;
-        }
-    }
-    
-    
-    if(action) {
-        this.startScrolling(action[0], action[1]);
-    } else {
-        this.stopScrolling()
-    } 
-};
-
-
 DartBoard.prototype.addHandlers = function() {
 	
 	var board = this;
@@ -337,7 +231,7 @@ DartBoard.prototype.addHandlers = function() {
 
 
 				console.log( point );
-				board.paper.setViewBox(
+				board.setViewBox(
 					xZoom,
 					yZoom,
 					board.size/board.zoomFactor,
@@ -354,6 +248,7 @@ DartBoard.prototype.addHandlers = function() {
 		$(this.elem).bind('touchend mouseup', function(e) {
 			if( board.zoomSelect && board.zoomState == 'zoomed' ) {
 				board.paper.setViewBox( 0, 0, board.size, board.size, false ); 
+				board.stopPanning();
 				board.zoomState = 'normal';	
 			}
 		});
@@ -386,9 +281,9 @@ DartBoard.prototype.addHandlers = function() {
 		point.x -= off.left;
 		point.y -= off.top;
 
-		console.log('x: ' + point.x + ' y: ' + point.y);
+		//console.log('x: ' + point.x + ' y: ' + point.y);
 
-		if( board.zoomSelect ) {
+		if( board.zoomSelect && (board.zoomState == 'zoomed') ) {
 			board.checkHotZones(point.x, point.y);
 		}
 
@@ -426,15 +321,58 @@ DartBoard.prototype.addHandlers = function() {
 };
 
 
+
+DartBoard.prototype.startPanning = function(xRatio, yRatio) {
+   	this.stopPanning();
+
+	var board = this;
+	this.pan = setInterval(function() {
+
+	var xDelta = xRatio * 10;
+	var yDelta = yRatio * 10;
+
+	board.setViewBox( board.viewX + xDelta, board.viewY + yDelta, board.viewWidth, board.viewHeight );
+
+    }, 50);    
+};
+
+DartBoard.prototype.stopPanning = function() {
+    if(this.pan !== null) {
+        clearInterval(this.pan);
+    }
+};
+
+
+
+
 DartBoard.prototype.checkHotZones = function(x, y) {
 	var s = this.hotZoneSize;
 
+	// The 'hotzone' is an area of the outter border of the zoomed in view
 	if( (x < s) || x > (this.size - s) || (y < s) || (y > this.size -s) ) {
-		console.log('zone');
-	} 
+		// If we are in the hotzone, we calulate the direction we need to pan in
+		var xFromCenter = x - this.size/2;
+		var yFromCenter = y - this.size/2;
+
+		this.startPanning( xFromCenter/this.size, yFromCenter/this.size);
+		
+	} else {
+		this.stopPanning();	
+	}
 
 
 
 	return true;
 
 };
+
+DartBoard.prototype.setViewBox = function(x, y, width, height, fit ) {
+	this.viewX = x;
+	this.viewY = y;
+	this.viewWidth = width;
+	this.viewHeight = height;
+
+	this.paper.setViewBox( x, y, width, height, fit );
+}
+
+
