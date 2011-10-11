@@ -66,7 +66,19 @@ DBInterface.prototype.getPlayers = function(callback) {
 
 }
 
-DBInterface.prototype.addPlayer = function( player ){
+DBInterface.prototype.addPlayer = function( player, callback ){	
+	console.log('addplayer: ' + player);
+	this._db.transaction(
+		function(t) {
+			t.executeSql( 'INSERT into player (name) VALUES (?)', [ player ],
+			function(t, results) {
+				callback();
+			},
+			function(t, error) {
+				console.warn('error inserting @ addPlayer');
+			});
+		}
+	);
 			
 }
 
