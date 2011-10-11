@@ -21,17 +21,19 @@ $('#gameselect').live( 'pagecreate', function() {
 
 $('#playerselect').live( 'pagecreate', function() {
 
-	var players = ['Jeff', 'Artur'];
+	getDB().getPlayers( function( players) {
 
-	for( var i = 0; i < players.length; i++ ) {
-		var player = players[i];
-		console.log('Adding ' + player);
-		var chkName = 'c_' + player;
+		for( var i = 0; i < players.length; i++ ) {
+			var player = players[i];
+			console.log('Adding ' + player.name);
+			var chkName = 'cp_' + player.id ;
 
-		var playerHtml = '<input type="checkbox" id="' + chkName + '" name="' +chkName + '" class="custom" /><label for="' + chkName + '">' + player + '</label>';
-		$('#playerselect legend').after(playerHtml);
-		console.log(playerHtml);
-	}
+			var playerHtml = '<input type="checkbox" id="' + chkName + '" name="' +chkName + '" class="custom" /><label for="' + chkName + '">' + player.name + '</label>';
+			$('#playerselect legend').after(playerHtml);
+			console.log(playerHtml);
+		}
+
+	});
 
 });
 
