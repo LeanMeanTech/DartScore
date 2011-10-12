@@ -18,7 +18,13 @@ $('#gameselect').live( 'pagecreate', function() {
 });
 
 
-function refreshPlayerList() {
+var SelectedPlayerId;
+
+function refreshPlayerList( force ) {
+
+	if( force ) {
+		$('#playerselect fieldset .ui-controlgroup-controls div').remove();
+	}
 
 	// Load players from the database
 	getDB().getPlayers( function( players) {
@@ -42,11 +48,19 @@ function refreshPlayerList() {
 		if( refresh ) {
 			$("#playerselect").page('destroy').page();
 			$('#playerselect span').bind( 'taphold', function(e) {
-					
+				// jquery mobile DOM mojo.  Ugly, but it works
+				
+				// the 'chkName' id
+				var id = $(this).parent().parent().find('input').attr('id');
+				SelectedPlayerId = id.split('_')[1];
+				
+
+				console.log(id);
+	
 				var playerName = $(this).find('span').html();	
 				
-				$('#playername_del').html( playerName );
-				$('#delplayerlink').click();
+				$('.playername').html( playerName );
+				$('#playerdetailslink').click();
 		
 			
 			});
@@ -85,3 +99,17 @@ $('#playerselect').live( 'pagecreate', function() {
 });
 
 
+
+
+function closeDialog() {
+	$('.ui-dialog').dialog('close')
+}
+
+function deletePlayer() {
+	console.log('deletePlayer');
+	getDB().deletePlayerById(SelectedPlayerId, function() {
+		// force regeneration of the player list
+		refreshPlayerList(true);
+		closeDialog();	
+	});
+}

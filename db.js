@@ -64,7 +64,7 @@ DBInterface.prototype.getPlayers = function(callback) {
 		}
 	);
 
-}
+};
 
 DBInterface.prototype.addPlayer = function( player, callback ){	
 	console.log('addplayer: ' + player);
@@ -80,5 +80,26 @@ DBInterface.prototype.addPlayer = function( player, callback ){
 		}
 	);
 			
+};
+
+
+DBInterface.prototype.deletePlayerById = function( id, callback ) {
+	console.log('deleteplayer: ' + id);
+	this._db.transaction(
+		function(t) {
+			t.executeSql( 'DELETE from player where id=?', [ id ],
+			function(t, results) {
+				callback();
+			},
+			function(t, error) {
+				console.warn('error @ deletePlayerById');
+				console.log(error);
+			});
+		}
+	);
+	
 }
+
+
+
 

@@ -85,18 +85,34 @@
 			</div>
 		</div>
 
-		<a id="delplayerlink" href="#delplayer" data-rel="dialog" data-transition="pop" style="display:none;"></a>
+		<a id="playerdetailslink" href="#playerdetails" data-rel="dialog" data-transition="pop" style="display:none;"></a>
 
 
-		<div data-role="page" id="delplayer">
+		<div data-role="page" id="playerdetails">
+			<div data-role="header">
+				<h1 class="playername"></h1>
+			</div>
+			<div data-role="content">
+
+				<a href="javascript:closeDialog();" data-role="button">OK</a>
+				<a href="#confirmdelete" data-role="button">Delete <span class="playername"></span></a>
+			</div>
+		</div>
+
+
+		<div data-role="page" id="confirmdelete">
 			<div data-role="header">
 				<h1>Confirm</h1>
 			</div>
-			<div data-role="content">
-				Are you sure you want to delete player <span id="playername_del"></span>?  This can not be undone.
 
+			<div data-role="content">
+				Are you sure you want to delete <span class="playername"></span>'s player record?  This can not be undone.
+
+				<a href="javascript:closeDialog();" data-role="button">No, don't delete</a>
+				<a href="javascript:deletePlayer();" data-role="button">Yes, delete <span class="playername"></span></a>
 			</div>
 		</div>
+
 
 	</body>
 </html>
