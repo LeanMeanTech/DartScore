@@ -41,6 +41,16 @@ function refreshPlayerList() {
 
 		if( refresh ) {
 			$("#playerselect").page('destroy').page();
+			$('#playerselect span').bind( 'taphold', function(e) {
+					
+				var playerName = $(this).find('span').html();	
+				
+				$('#playername_del').html( playerName );
+				$('#delplayerlink').click();
+		
+			
+			});
+
 		}
 
 	});
@@ -65,6 +75,7 @@ $( function() {
 		});
 
 	});
+
 });
 
 
