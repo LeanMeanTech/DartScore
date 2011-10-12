@@ -55,6 +55,8 @@ $( function() {
 	$('#btn_addplayer').bind( 'click', function() {
 
 		var newPlayerName = $('#input_new_player').val();
+		// Clear the value for the next entry
+		$('#input_new_player').val('');
 	
 		console.log('adding player: ' + newPlayerName );
 		getDB().addPlayer(newPlayerName, function() {
